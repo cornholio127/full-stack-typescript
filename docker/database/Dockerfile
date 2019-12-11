@@ -1,0 +1,7 @@
+FROM postgres:12.1-alpine
+
+ENV POSTGRES_USER api_user
+ENV POSTGRES_PASSWORD password
+ENV POSTGRES_DB shop
+
+EXPOSE 5432

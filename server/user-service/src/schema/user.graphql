@@ -1,0 +1,51 @@
+type Country {
+  id: ID!
+  code: String!
+  name: String!
+}
+
+type Address {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  companyName: String
+  street: String!
+  zipCode: String!
+  city: String!
+  country: Country!
+}
+
+type User {
+  id: ID!
+  email: String!
+  billingAddress: Address
+  shippingAddress: Address
+}
+
+type Query {
+  userByEmail(email: String!): [User!]!
+  countries: [Country!]!
+}
+
+input UserInput {
+  id: ID
+  email: String!
+  billingAddress: AddressInput
+  shippingAddress: AddressInput
+}
+
+input AddressInput {
+  id: ID
+  firstName: String!
+  lastName: String!
+  companyName: String
+  street: String!
+  zipCode: String!
+  city: String!
+  countryCode: String!
+}
+
+type Mutation {
+  upsertUser(user: UserInput!): ID!
+  upsertAddress(address: AddressInput!): ID!
+}

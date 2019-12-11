@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+    db:
+        image: shop-database:latest
+        volumes:
+         - db_data:/var/lib/postgresql/data
+         - db_log:/var/log/postgresql
+        ports:
+         - "5432:5432"
+volumes:
+    db_data:
+    db_log:
