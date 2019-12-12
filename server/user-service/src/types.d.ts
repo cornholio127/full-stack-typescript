@@ -19,7 +19,7 @@ export type GQLAddress = {
   street: Scalars['String'],
   zipCode: Scalars['String'],
   city: Scalars['String'],
-  country: GQLCountry,
+  country: Scalars['String'],
 };
 
 export type GQLAddressInput = {
@@ -30,7 +30,7 @@ export type GQLAddressInput = {
   street: Scalars['String'],
   zipCode: Scalars['String'],
   city: Scalars['String'],
-  countryCode: Scalars['String'],
+  country: Scalars['String'],
 };
 
 export type GQLCountry = {
@@ -40,25 +40,30 @@ export type GQLCountry = {
   name: Scalars['String'],
 };
 
+export type GQLInsertUserInput = {
+  email: Scalars['String'],
+  password: Scalars['String'],
+};
+
 export type GQLMutation = {
    __typename?: 'Mutation',
-  upsertUser: Scalars['ID'],
-  upsertAddress: Scalars['ID'],
+  insertUser: Scalars['ID'],
+  updateUser: Scalars['Boolean'],
 };
 
 
-export type GQLMutationUpsertUserArgs = {
-  user: GQLUserInput
+export type GQLMutationInsertUserArgs = {
+  user: GQLInsertUserInput
 };
 
 
-export type GQLMutationUpsertAddressArgs = {
-  address: GQLAddressInput
+export type GQLMutationUpdateUserArgs = {
+  user: GQLUpdateUserInput
 };
 
 export type GQLQuery = {
    __typename?: 'Query',
-  userByEmail: Array<GQLUser>,
+  userByEmail?: Maybe<GQLUser>,
   countries: Array<GQLCountry>,
 };
 
@@ -67,19 +72,18 @@ export type GQLQueryUserByEmailArgs = {
   email: Scalars['String']
 };
 
+export type GQLUpdateUserInput = {
+  id: Scalars['ID'],
+  billingAddress?: Maybe<GQLAddressInput>,
+  shippingAddress?: Maybe<GQLAddressInput>,
+};
+
 export type GQLUser = {
    __typename?: 'User',
   id: Scalars['ID'],
   email: Scalars['String'],
   billingAddress?: Maybe<GQLAddress>,
   shippingAddress?: Maybe<GQLAddress>,
-};
-
-export type GQLUserInput = {
-  id?: Maybe<Scalars['ID']>,
-  email: Scalars['String'],
-  billingAddress?: Maybe<GQLAddressInput>,
-  shippingAddress?: Maybe<GQLAddressInput>,
 };
 
 
@@ -160,7 +164,8 @@ export type GQLResolversTypes = {
   Address: ResolverTypeWrapper<GQLAddress>,
   Country: ResolverTypeWrapper<GQLCountry>,
   Mutation: ResolverTypeWrapper<{}>,
-  UserInput: GQLUserInput,
+  InsertUserInput: GQLInsertUserInput,
+  UpdateUserInput: GQLUpdateUserInput,
   AddressInput: GQLAddressInput,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
 };
@@ -174,7 +179,8 @@ export type GQLResolversParentTypes = {
   Address: GQLAddress,
   Country: GQLCountry,
   Mutation: {},
-  UserInput: GQLUserInput,
+  InsertUserInput: GQLInsertUserInput,
+  UpdateUserInput: GQLUpdateUserInput,
   AddressInput: GQLAddressInput,
   Boolean: Scalars['Boolean'],
 };
@@ -187,7 +193,7 @@ export type GQLAddressResolvers<ContextType = any, ParentType extends GQLResolve
   street?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
   zipCode?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
   city?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
-  country?: Resolver<GQLResolversTypes['Country'], ParentType, ContextType>,
+  country?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type GQLCountryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Country'] = GQLResolversParentTypes['Country']> = {
@@ -197,12 +203,12 @@ export type GQLCountryResolvers<ContextType = any, ParentType extends GQLResolve
 };
 
 export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
-  upsertUser?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType, RequireFields<GQLMutationUpsertUserArgs, 'user'>>,
-  upsertAddress?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType, RequireFields<GQLMutationUpsertAddressArgs, 'address'>>,
+  insertUser?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType, RequireFields<GQLMutationInsertUserArgs, 'user'>>,
+  updateUser?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationUpdateUserArgs, 'user'>>,
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  userByEmail?: Resolver<Array<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryUserByEmailArgs, 'email'>>,
+  userByEmail?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType, RequireFields<GQLQueryUserByEmailArgs, 'email'>>,
   countries?: Resolver<Array<GQLResolversTypes['Country']>, ParentType, ContextType>,
 };
 

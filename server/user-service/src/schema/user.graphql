@@ -12,7 +12,7 @@ type Address {
   street: String!
   zipCode: String!
   city: String!
-  country: Country!
+  country: String!
 }
 
 type User {
@@ -23,13 +23,17 @@ type User {
 }
 
 type Query {
-  userByEmail(email: String!): [User!]!
+  userByEmail(email: String!): User
   countries: [Country!]!
 }
 
-input UserInput {
-  id: ID
+input InsertUserInput {
   email: String!
+  password: String!
+}
+
+input UpdateUserInput {
+  id: ID!
   billingAddress: AddressInput
   shippingAddress: AddressInput
 }
@@ -42,10 +46,10 @@ input AddressInput {
   street: String!
   zipCode: String!
   city: String!
-  countryCode: String!
+  country: String!
 }
 
 type Mutation {
-  upsertUser(user: UserInput!): ID!
-  upsertAddress(address: AddressInput!): ID!
+  insertUser(user: InsertUserInput!): ID!
+  updateUser(user: UpdateUserInput!): Boolean!
 }

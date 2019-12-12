@@ -1,5 +1,6 @@
 import { PoolConfig, Pool } from 'pg';
 import { QueryFactory } from 'tsooq';
+import { getLogger } from 'log4js';
 
 const config: PoolConfig = {
   host: 'localhost',
@@ -12,3 +13,4 @@ const config: PoolConfig = {
 const pool = new Pool(config);
 
 export const create = QueryFactory.create(pool);
+create.setLogger(getLogger());
