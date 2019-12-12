@@ -3,8 +3,8 @@ import fs from 'fs';
 import * as countryResolver from './resolvers/country';
 import * as userResolver from './resolvers/user';
 import * as addressResolver from './resolvers/address';
+import * as loginResolver from './resolvers/login';
 import { configure } from 'log4js';
-
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -30,6 +30,8 @@ const resolvers = {
   Mutation: {
     insertUser: userResolver.insertUser,
     updateUser: userResolver.updateUser,
+    activateUser: userResolver.activateUser,
+    login: loginResolver.login,
   },
 };
 

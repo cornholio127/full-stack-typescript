@@ -1,12 +1,10 @@
 import { GQLQueryResolvers, GQLMutationResolvers, GQLAddress, GQLAddressInput } from '../types';
-import { isId } from './util';
+import { isId, hashPassword, generateToken } from './util';
 import { create } from '../db';
 import { Tables, ShopUser, ShopLogin, ShopAddress } from '../gen/public';
 import { PoolClient } from 'pg';
-import { hashSync } from 'bcrypt';
-import { constantResult } from 'tsooq';
-
-const SALT_ROUNDS = 11;
+import { constantResult, select } from 'tsooq';
+import { getLogger } from 'log4js';
 
 const addressRef = (id?: number): GQLAddress | undefined => id === undefined ? undefined : { id: '' + id } as GQLAddress;
 
@@ -26,11 +24,12 @@ export const userByEmail: GQLQueryResolvers['userByEmail'] = (source, args, cont
 
 export const insertUser: GQLMutationResolvers['insertUser'] = async (source, args, context, info) => {
   const { user } = args;
-  const pwhash = hashSync(user.password, SALT_ROUNDS);
+  const pwhash = hashPassword(user.password);
+  const token = generateToken();
   const runnable = async (client: PoolClient) => {
     const loginId = await create
-      .insertInto(Tables.SHOP_LOGIN, ShopLogin.PWHASH, ShopLogin.ACTIVE)
-      .values(pwhash, false)
+      .insertInto(Tables.SHOP_LOGIN, ShopLogin.PWHASH, ShopLogin.ACTIVE, ShopLogin.ACTIVATION_TOKEN)
+      .values(pwhash, false, token)
       .returning(ShopLogin.ID)
       .runnable()(client);
     return await create
@@ -40,6 +39,7 @@ export const insertUser: GQLMutationResolvers['insertUser'] = async (source, arg
       .runnable()(client);
   };
   const userId = await create.transaction<number>(runnable);
+  getLogger().info('activation token: ' + token);
   return '' + userId;
 };
 
@@ -84,7 +84,7 @@ export const updateUser: GQLMutationResolvers['updateUser'] = async (source, arg
       const shippingAddressId = await upsertAddress(user.shippingAddress, client);
       await create
         .update(Tables.SHOP_USER)
-        .set(ShopUser.BILLING_ADDRESS_ID, shippingAddressId)
+        .set(ShopUser.SHIPPING_ADDRESS_ID, shippingAddressId)
         .where(ShopUser.ID.eq(userId))
         .runnable()(client);
     }
@@ -92,4 +92,15 @@ export const updateUser: GQLMutationResolvers['updateUser'] = async (source, arg
   };
   await create.transaction(runnable);
   return true;
+};
+
+export const activateUser: GQLMutationResolvers['activateUser'] = async (source, args, context, info) => {
+  const { email, token } = args.activation;
+  const result = await create
+    .update(Tables.SHOP_LOGIN)
+    .set(ShopLogin.ACTIVE, true)
+    .set(ShopLogin.ACTIVATION_TOKEN, undefined)
+    .where(ShopLogin.ID.eq(select(ShopUser.ID).from(Tables.SHOP_USER).where(ShopUser.EMAIL.eq(email))).and(ShopLogin.ACTIVATION_TOKEN.eq(token)))
+    .execute();
+  return result.rowCount === 1;
 };

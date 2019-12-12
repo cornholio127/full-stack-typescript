@@ -49,7 +49,19 @@ input AddressInput {
   country: String!
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input ActivateUserInput {
+  email: String!
+  token: String!
+}
+
 type Mutation {
   insertUser(user: InsertUserInput!): ID!
   updateUser(user: UpdateUserInput!): Boolean!
+  activateUser(activation: ActivateUserInput!): Boolean!
+  login(cred: LoginInput): String!
 }

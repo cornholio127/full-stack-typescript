@@ -10,6 +10,11 @@ export type Scalars = {
   Float: number,
 };
 
+export type GQLActivateUserInput = {
+  email: Scalars['String'],
+  token: Scalars['String'],
+};
+
 export type GQLAddress = {
    __typename?: 'Address',
   id: Scalars['ID'],
@@ -45,10 +50,17 @@ export type GQLInsertUserInput = {
   password: Scalars['String'],
 };
 
+export type GQLLoginInput = {
+  email: Scalars['String'],
+  password: Scalars['String'],
+};
+
 export type GQLMutation = {
    __typename?: 'Mutation',
   insertUser: Scalars['ID'],
   updateUser: Scalars['Boolean'],
+  activateUser: Scalars['Boolean'],
+  login: Scalars['String'],
 };
 
 
@@ -59,6 +71,16 @@ export type GQLMutationInsertUserArgs = {
 
 export type GQLMutationUpdateUserArgs = {
   user: GQLUpdateUserInput
+};
+
+
+export type GQLMutationActivateUserArgs = {
+  activation: GQLActivateUserInput
+};
+
+
+export type GQLMutationLoginArgs = {
+  cred?: Maybe<GQLLoginInput>
 };
 
 export type GQLQuery = {
@@ -168,6 +190,8 @@ export type GQLResolversTypes = {
   UpdateUserInput: GQLUpdateUserInput,
   AddressInput: GQLAddressInput,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  ActivateUserInput: GQLActivateUserInput,
+  LoginInput: GQLLoginInput,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -183,6 +207,8 @@ export type GQLResolversParentTypes = {
   UpdateUserInput: GQLUpdateUserInput,
   AddressInput: GQLAddressInput,
   Boolean: Scalars['Boolean'],
+  ActivateUserInput: GQLActivateUserInput,
+  LoginInput: GQLLoginInput,
 };
 
 export type GQLAddressResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Address'] = GQLResolversParentTypes['Address']> = {
@@ -205,6 +231,8 @@ export type GQLCountryResolvers<ContextType = any, ParentType extends GQLResolve
 export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
   insertUser?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType, RequireFields<GQLMutationInsertUserArgs, 'user'>>,
   updateUser?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationUpdateUserArgs, 'user'>>,
+  activateUser?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationActivateUserArgs, 'activation'>>,
+  login?: Resolver<GQLResolversTypes['String'], ParentType, ContextType, GQLMutationLoginArgs>,
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
