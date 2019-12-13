@@ -45,6 +45,8 @@
     "concurrently": "5.0.1",
     "cross-env": "6.0.3",
     "eslint": "6.7.2",
+    "eslint-config-prettier": "6.7.0",
+    "eslint-plugin-prettier": "3.1.1",
     "mocha": "6.2.2",
     "nodemon": "2.0.1",
     "shelljs": "0.8.3",

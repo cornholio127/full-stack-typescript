@@ -15,7 +15,7 @@ const toAddress = (row: Record): GQLAddress => ({
   country: row.get(ShopAddress.COUNTRY),
 });
 
-export const userBillingAddress: GQLUserResolvers['billingAddress'] = (source) => {
+export const userBillingAddress: GQLUserResolvers['billingAddress'] = source => {
   if (!isId(source.billingAddress.id)) {
     return null;
   }
@@ -27,7 +27,7 @@ export const userBillingAddress: GQLUserResolvers['billingAddress'] = (source) =
     .fetchSingleMapped(toAddress);
 };
 
-export const userShippingAddress: GQLUserResolvers['shippingAddress'] = (source) => {
+export const userShippingAddress: GQLUserResolvers['shippingAddress'] = source => {
   if (!isId(source.shippingAddress.id)) {
     return null;
   }

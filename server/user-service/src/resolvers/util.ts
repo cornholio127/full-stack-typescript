@@ -3,15 +3,19 @@ import seedrandom from 'seedrandom';
 import { JwtPayload } from './types';
 import jwt from 'jsonwebtoken';
 
-export const isId = (value: unknown) => typeof value === 'string' && Number(value) > 0;
+export const isId = (value: unknown) =>
+  typeof value === 'string' && Number(value) > 0;
 
 const SALT_ROUNDS = 11;
 
-export const hashPassword = (password: string): string => hashSync(password, SALT_ROUNDS);
+export const hashPassword = (password: string): string =>
+  hashSync(password, SALT_ROUNDS);
 
-export const verifyPassword = (password: string, pwhash: string): boolean => compareSync(password, pwhash);
+export const verifyPassword = (password: string, pwhash: string): boolean =>
+  compareSync(password, pwhash);
 
-const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const ALPHABET =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 const randomString: (length: number) => string = length => {
   const randomChars: string[] = [];

@@ -15,14 +15,16 @@ const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
 configure({
   appenders: {
-    console: { type: 'console', layout: LAYOUT }
+    console: { type: 'console', layout: LAYOUT },
   },
   categories: {
-    default: { appenders: [ 'console' ], level: 'trace' },
-  }
+    default: { appenders: ['console'], level: 'trace' },
+  },
 });
 
-const typeDefs = gql(fs.readFileSync(__dirname.concat('/schema/user.graphql'), 'utf8'));
+const typeDefs = gql(
+  fs.readFileSync(__dirname.concat('/schema/user.graphql'), 'utf8')
+);
 const resolvers = {
   Query: {
     countries: countryResolver.countries,
@@ -46,7 +48,7 @@ interface ContextArg {
 }
 
 const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
-  const auth = req && req.headers.authentication || '';
+  const auth = (req && req.headers.authentication) || '';
   const token = typeof auth === 'string' ? auth : auth[0];
   if (token.startsWith('Bearer ')) {
     const decoded = verifyAuthToken(token.substring('Bearer '.length));
@@ -60,6 +62,12 @@ const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
   return {};
 };
 
-const server = new ApolloServer({ typeDefs, resolvers, context: createContext });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: createContext,
+});
 
-server.listen({ port: 9000 }).then(({ url }) => console.log(`Server ready at ${url}`));
+server
+  .listen({ port: 9000 })
+  .then(({ url }) => console.log(`Server ready at ${url}`));

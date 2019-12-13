@@ -8,14 +8,16 @@ const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
 configure({
   appenders: {
-    console: { type: 'console', layout: LAYOUT }
+    console: { type: 'console', layout: LAYOUT },
   },
   categories: {
-    default: { appenders: [ 'console' ], level: 'trace' },
-  }
+    default: { appenders: ['console'], level: 'trace' },
+  },
 });
 
-const typeDefs = gql(fs.readFileSync(__dirname.concat('/schema/product.graphql'), 'utf8'));
+const typeDefs = gql(
+  fs.readFileSync(__dirname.concat('/schema/product.graphql'), 'utf8')
+);
 const resolvers = {
   Query: {
     products: productResolver.products,
@@ -28,4 +30,6 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-server.listen({ port: 9000 }).then(({ url }) => console.log(`Server ready at ${url}`));
+server
+  .listen({ port: 9000 })
+  .then(({ url }) => console.log(`Server ready at ${url}`));

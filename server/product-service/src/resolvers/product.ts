@@ -1,4 +1,8 @@
-import { GQLQueryResolvers, GQLCategoryResolvers, GQLProduct } from '../gen/gql/types';
+import {
+  GQLQueryResolvers,
+  GQLCategoryResolvers,
+  GQLProduct,
+} from '../gen/gql/types';
 import { create } from '../db';
 import { Tables, ShopProduct, ShopCategory } from '../gen/db/public';
 import { DbFunctions, Record } from 'tsooq';
@@ -31,12 +35,16 @@ export const products: GQLQueryResolvers['products'] = () => {
     .fetchMapped(toGQLProduct);
 };
 
-export const categoryProducts: GQLCategoryResolvers['products'] = (source) => {
+export const categoryProducts: GQLCategoryResolvers['products'] = source => {
   const categoryId = Number(source.id);
   return create
     .select()
     .from(Tables.SHOP_PRODUCT)
-    .where(ShopProduct.ACTIVATION_DATE.lte(DbFunctions.now()).and(ShopProduct.CATEGORY_ID.eq(categoryId)))
+    .where(
+      ShopProduct.ACTIVATION_DATE.lte(DbFunctions.now()).and(
+        ShopProduct.CATEGORY_ID.eq(categoryId)
+      )
+    )
     .orderBy(ShopProduct.ACTIVATION_DATE.desc())
     .fetchMapped(row => {
       const product = toGQLProduct(row);

@@ -1,4 +1,9 @@
-import { GQLQueryResolvers, GQLMutationResolvers, GQLAddress, GQLAddressInput } from '../gen/gql/types';
+import {
+  GQLQueryResolvers,
+  GQLMutationResolvers,
+  GQLAddress,
+  GQLAddressInput,
+} from '../gen/gql/types';
 import { isId, hashPassword, generateToken } from './util';
 import { create } from '../db';
 import { Tables, ShopUser, ShopLogin, ShopAddress } from '../gen/db/public';
@@ -7,7 +12,8 @@ import { constantResult, select } from 'tsooq';
 import { getLogger } from 'log4js';
 import { AuthContext } from '../types';
 
-const addressRef = (id?: number): GQLAddress | undefined => id === undefined ? undefined : { id: '' + id } as GQLAddress;
+const addressRef = (id?: number): GQLAddress | undefined =>
+  id === undefined ? undefined : ({ id: '' + id } as GQLAddress);
 
 export const user: GQLQueryResolvers['user'] = (source, args, context) => {
   const authContext = context as AuthContext;
@@ -26,13 +32,21 @@ export const user: GQLQueryResolvers['user'] = (source, args, context) => {
     }));
 };
 
-export const insertUser: GQLMutationResolvers['insertUser'] = async (source, args) => {
+export const insertUser: GQLMutationResolvers['insertUser'] = async (
+  source,
+  args
+) => {
   const { user } = args;
   const pwhash = hashPassword(user.password);
   const token = generateToken();
   const runnable = async (client: PoolClient) => {
     const loginId = await create
-      .insertInto(Tables.SHOP_LOGIN, ShopLogin.PWHASH, ShopLogin.ACTIVE, ShopLogin.ACTIVATION_TOKEN)
+      .insertInto(
+        Tables.SHOP_LOGIN,
+        ShopLogin.PWHASH,
+        ShopLogin.ACTIVE,
+        ShopLogin.ACTIVATION_TOKEN
+      )
       .values(pwhash, false, token)
       .returning(ShopLogin.ID)
       .runnable()(client);
@@ -64,15 +78,35 @@ const upsertAddress = async (address: GQLAddressInput, client: PoolClient) => {
     return addressId;
   } else {
     const result = await create
-      .insertInto(Tables.SHOP_ADDRESS, ShopAddress.FIRST_NAME, ShopAddress.LAST_NAME, ShopAddress.COMPANY_NAME, ShopAddress.STREET, ShopAddress.ZIP_CODE, ShopAddress.CITY, ShopAddress.COUNTRY)
-      .values(address.firstName, address.lastName, address.companyName, address.street, address.zipCode, address.city, address.country)
+      .insertInto(
+        Tables.SHOP_ADDRESS,
+        ShopAddress.FIRST_NAME,
+        ShopAddress.LAST_NAME,
+        ShopAddress.COMPANY_NAME,
+        ShopAddress.STREET,
+        ShopAddress.ZIP_CODE,
+        ShopAddress.CITY,
+        ShopAddress.COUNTRY
+      )
+      .values(
+        address.firstName,
+        address.lastName,
+        address.companyName,
+        address.street,
+        address.zipCode,
+        address.city,
+        address.country
+      )
       .returning(ShopAddress.ID)
       .runnable()(client);
     return result.value;
   }
 };
 
-export const updateUser: GQLMutationResolvers['updateUser'] = async (source, args) => {
+export const updateUser: GQLMutationResolvers['updateUser'] = async (
+  source,
+  args
+) => {
   const { user } = args;
   const userId = Number(user.id);
   const runnable = async (client: PoolClient) => {
@@ -85,7 +119,10 @@ export const updateUser: GQLMutationResolvers['updateUser'] = async (source, arg
         .runnable()(client);
     }
     if (user.shippingAddress) {
-      const shippingAddressId = await upsertAddress(user.shippingAddress, client);
+      const shippingAddressId = await upsertAddress(
+        user.shippingAddress,
+        client
+      );
       await create
         .update(Tables.SHOP_USER)
         .set(ShopUser.SHIPPING_ADDRESS_ID, shippingAddressId)
@@ -98,13 +135,22 @@ export const updateUser: GQLMutationResolvers['updateUser'] = async (source, arg
   return true;
 };
 
-export const activateUser: GQLMutationResolvers['activateUser'] = async (source, args) => {
+export const activateUser: GQLMutationResolvers['activateUser'] = async (
+  source,
+  args
+) => {
   const { email, token } = args.activation;
   const result = await create
     .update(Tables.SHOP_LOGIN)
     .set(ShopLogin.ACTIVE, true)
     .set(ShopLogin.ACTIVATION_TOKEN, undefined)
-    .where(ShopLogin.ID.eq(select(ShopUser.ID).from(Tables.SHOP_USER).where(ShopUser.EMAIL.eq(email))).and(ShopLogin.ACTIVATION_TOKEN.eq(token)))
+    .where(
+      ShopLogin.ID.eq(
+        select(ShopUser.ID)
+          .from(Tables.SHOP_USER)
+          .where(ShopUser.EMAIL.eq(email))
+      ).and(ShopLogin.ACTIVATION_TOKEN.eq(token))
+    )
     .execute();
   return result.rowCount === 1;
 };
