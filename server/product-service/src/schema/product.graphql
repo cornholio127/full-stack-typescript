@@ -1,0 +1,30 @@
+type Image {
+  id: ID!
+  url: String!
+  isMain: Boolean!
+}
+
+type Category {
+  id: ID!
+  name: String!
+}
+
+type Price {
+  amount: String!
+  vatPct: String!
+}
+
+type Product {
+  id: ID!
+  name: String!
+  description: String
+  category: Category!
+  price: Price!
+  images: [Image!]!
+  activationDate: String!
+}
+
+type Query {
+  products: [Product!]!
+  categories: [Category!]!
+}
