@@ -9,7 +9,7 @@ import { AuthContext } from '../types';
 
 const addressRef = (id?: number): GQLAddress | undefined => id === undefined ? undefined : { id: '' + id } as GQLAddress;
 
-export const user: GQLQueryResolvers['user'] = (source, args, context, info) => {
+export const user: GQLQueryResolvers['user'] = (source, args, context) => {
   const authContext = context as AuthContext;
   if (authContext.userId === undefined) {
     return null;
@@ -26,7 +26,7 @@ export const user: GQLQueryResolvers['user'] = (source, args, context, info) => 
     }));
 };
 
-export const insertUser: GQLMutationResolvers['insertUser'] = async (source, args, context, info) => {
+export const insertUser: GQLMutationResolvers['insertUser'] = async (source, args) => {
   const { user } = args;
   const pwhash = hashPassword(user.password);
   const token = generateToken();
@@ -72,7 +72,7 @@ const upsertAddress = async (address: GQLAddressInput, client: PoolClient) => {
   }
 };
 
-export const updateUser: GQLMutationResolvers['updateUser'] = async (source, args, context, info) => {
+export const updateUser: GQLMutationResolvers['updateUser'] = async (source, args) => {
   const { user } = args;
   const userId = Number(user.id);
   const runnable = async (client: PoolClient) => {
@@ -98,7 +98,7 @@ export const updateUser: GQLMutationResolvers['updateUser'] = async (source, arg
   return true;
 };
 
-export const activateUser: GQLMutationResolvers['activateUser'] = async (source, args, context, info) => {
+export const activateUser: GQLMutationResolvers['activateUser'] = async (source, args) => {
   const { email, token } = args.activation;
   const result = await create
     .update(Tables.SHOP_LOGIN)

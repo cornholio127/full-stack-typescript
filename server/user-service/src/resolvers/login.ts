@@ -3,7 +3,7 @@ import { create } from '../db';
 import { Tables, ShopUser, ShopLogin } from '../gen/db/public';
 import { verifyPassword, createAuthToken } from './util';
 
-export const login: GQLMutationResolvers['login'] = async (source, args, context, info) => {
+export const login: GQLMutationResolvers['login'] = async (source, args) => {
   const { email, password } = args.cred;
   const result = await create
     .select(ShopUser.ID, ShopLogin.PWHASH)

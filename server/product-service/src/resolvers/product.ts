@@ -20,7 +20,7 @@ const toGQLProduct = (row: Record): GQLProduct => ({
   images: [],
 });
 
-export const products: GQLQueryResolvers['products'] = (source, args, context, info) => {
+export const products: GQLQueryResolvers['products'] = () => {
   return create
     .select(...Tables.SHOP_PRODUCT.fields, ShopCategory.NAME)
     .from(Tables.SHOP_PRODUCT)
@@ -31,7 +31,7 @@ export const products: GQLQueryResolvers['products'] = (source, args, context, i
     .fetchMapped(toGQLProduct);
 };
 
-export const categoryProducts: GQLCategoryResolvers['products'] = (source, args, context, info) => {
+export const categoryProducts: GQLCategoryResolvers['products'] = (source) => {
   const categoryId = Number(source.id);
   return create
     .select()

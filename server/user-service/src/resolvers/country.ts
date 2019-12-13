@@ -2,7 +2,7 @@ import { GQLQueryResolvers } from '../gen/gql/types';
 import { create } from '../db';
 import { Tables, ShopCountry } from '../gen/db/public';
 
-export const countries: GQLQueryResolvers['countries'] = (source, args, context, info) => {
+export const countries: GQLQueryResolvers['countries'] = () => {
   return create
     .select()
     .from(Tables.SHOP_COUNTRY)
