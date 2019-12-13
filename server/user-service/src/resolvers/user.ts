@@ -1,19 +1,23 @@
-import { GQLQueryResolvers, GQLMutationResolvers, GQLAddress, GQLAddressInput } from '../types';
+import { GQLQueryResolvers, GQLMutationResolvers, GQLAddress, GQLAddressInput } from '../gen/gql/types';
 import { isId, hashPassword, generateToken } from './util';
 import { create } from '../db';
-import { Tables, ShopUser, ShopLogin, ShopAddress } from '../gen/public';
+import { Tables, ShopUser, ShopLogin, ShopAddress } from '../gen/db/public';
 import { PoolClient } from 'pg';
 import { constantResult, select } from 'tsooq';
 import { getLogger } from 'log4js';
+import { AuthContext } from '../types';
 
 const addressRef = (id?: number): GQLAddress | undefined => id === undefined ? undefined : { id: '' + id } as GQLAddress;
 
-export const userByEmail: GQLQueryResolvers['userByEmail'] = (source, args, context, info) => {
-  const { email } = args;
+export const user: GQLQueryResolvers['user'] = (source, args, context, info) => {
+  const authContext = context as AuthContext;
+  if (authContext.userId === undefined) {
+    return null;
+  }
   return create
     .select()
     .from(Tables.SHOP_USER)
-    .where(ShopUser.EMAIL.eq(email))
+    .where(ShopUser.ID.eq(authContext.userId))
     .fetchSingleMapped(row => ({
       id: '' + row.get(ShopUser.ID),
       email: row.get(ShopUser.EMAIL),

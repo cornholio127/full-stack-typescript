@@ -1,7 +1,7 @@
-import { GQLMutationResolvers } from '../types';
+import { GQLMutationResolvers } from '../gen/gql/types';
 import { create } from '../db';
-import { Tables, ShopUser, ShopLogin } from '../gen/public';
-import { verifyPassword } from './util';
+import { Tables, ShopUser, ShopLogin } from '../gen/db/public';
+import { verifyPassword, createAuthToken } from './util';
 
 export const login: GQLMutationResolvers['login'] = async (source, args, context, info) => {
   const { email, password } = args.cred;
@@ -14,7 +14,7 @@ export const login: GQLMutationResolvers['login'] = async (source, args, context
     .fetchSingle();
   if (result && verifyPassword(password, result.get(ShopLogin.PWHASH))) {
     const userId = result.get(ShopUser.ID);
-    return 'token for ' + userId;
+    return createAuthToken(userId);
   }
   return 'login failed';
 };

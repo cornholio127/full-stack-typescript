@@ -1,6 +1,6 @@
-import { GQLQueryResolvers } from '../types';
+import { GQLQueryResolvers } from '../gen/gql/types';
 import { create } from '../db';
-import { Tables, ShopCountry } from '../gen/public';
+import { Tables, ShopCountry } from '../gen/db/public';
 
 export const countries: GQLQueryResolvers['countries'] = (source, args, context, info) => {
   return create

@@ -23,7 +23,7 @@ type User {
 }
 
 type Query {
-  userByEmail(email: String!): User
+  user: User
   countries: [Country!]!
 }
 

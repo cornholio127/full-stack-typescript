@@ -1,10 +1,15 @@
 import { ApolloServer, gql } from 'apollo-server';
+import { ContextFunction } from 'apollo-server-core';
 import fs from 'fs';
 import * as countryResolver from './resolvers/country';
 import * as userResolver from './resolvers/user';
 import * as addressResolver from './resolvers/address';
 import * as loginResolver from './resolvers/login';
 import { configure } from 'log4js';
+import { Request, Response } from 'express';
+import { verifyAuthToken } from './resolvers/util';
+import { JwtPayload } from './resolvers/types';
+import { AuthContext } from './types';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -21,7 +26,7 @@ const typeDefs = gql(fs.readFileSync(__dirname.concat('/schema/user.graphql'), '
 const resolvers = {
   Query: {
     countries: countryResolver.countries,
-    userByEmail: userResolver.userByEmail,
+    user: userResolver.user,
   },
   User: {
     billingAddress: addressResolver.userBillingAddress,
@@ -35,6 +40,26 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({ typeDefs, resolvers });
+interface ContextArg {
+  req?: Request;
+  res?: Response;
+}
+
+const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
+  const auth = req && req.headers.authentication || '';
+  const token = typeof auth === 'string' ? auth : auth[0];
+  if (token.startsWith('Bearer ')) {
+    const decoded = verifyAuthToken(token.substring('Bearer '.length));
+    if (typeof decoded === 'object') {
+      return {
+        userId: (decoded as JwtPayload).uid,
+        sessionId: (decoded as JwtPayload).sid,
+      };
+    }
+  }
+  return {};
+};
+
+const server = new ApolloServer({ typeDefs, resolvers, context: createContext });
 
 server.listen({ port: 9000 }).then(({ url }) => console.log(`Server ready at ${url}`));

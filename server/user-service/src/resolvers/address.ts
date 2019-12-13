@@ -1,6 +1,6 @@
-import { GQLUserResolvers, GQLAddress } from '../types';
+import { GQLUserResolvers, GQLAddress } from '../gen/gql/types';
 import { create } from '../db';
-import { Tables, ShopAddress } from '../gen/public';
+import { Tables, ShopAddress } from '../gen/db/public';
 import { Record } from 'tsooq';
 import { isId } from './util';
 

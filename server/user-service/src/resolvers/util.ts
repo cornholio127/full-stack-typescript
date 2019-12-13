@@ -1,5 +1,7 @@
 import { hashSync, compareSync } from 'bcrypt';
 import seedrandom from 'seedrandom';
+import { JwtPayload } from './types';
+import jwt from 'jsonwebtoken';
 
 export const isId = (value: unknown) => typeof value === 'string' && Number(value) > 0;
 
@@ -20,4 +22,20 @@ const randomString: (length: number) => string = length => {
   return randomChars.join('');
 };
 
-export const generateToken: () => string = () => randomString(20);
+export const generateToken = (): string => randomString(20);
+
+const generateSessionId = (): string => randomString(24);
+
+const JWT_SECRET = 'BFNpmW7B2oJm4b3HxxeTufSXyabId8IL49z6MXoQ';
+
+export const createAuthToken = (userId: number): string => {
+  const payload: JwtPayload = {
+    uid: userId,
+    sid: generateSessionId(),
+  };
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '6h' });
+};
+
+export const verifyAuthToken = (token: string): JwtPayload | string => {
+  return jwt.verify(token, JWT_SECRET) as JwtPayload | string;
+};
