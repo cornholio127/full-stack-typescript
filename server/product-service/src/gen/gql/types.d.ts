@@ -13,6 +13,7 @@ export type GQLCategory = {
    __typename?: 'Category',
   id: Scalars['ID'],
   name: Scalars['String'],
+  products: Array<GQLProduct>,
 };
 
 export type GQLImage = {
@@ -141,6 +142,7 @@ export type GQLResolversParentTypes = {
 export type GQLCategoryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Category'] = GQLResolversParentTypes['Category']> = {
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  products?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType>,
 };
 
 export type GQLImageResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Image'] = GQLResolversParentTypes['Image']> = {
