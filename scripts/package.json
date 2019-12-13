@@ -1,0 +1,22 @@
+{
+  "name": "scripts",
+  "displayName": "Fullstack TypeScript Shop: Scripts",
+  "author": {
+    "name": "Mathias Haessig",
+    "email": "cornholio127@live.com",
+    "url": "https://github.com/cornholio127"
+  },
+  "version": "0.1.0",
+  "private": false,
+  "license": "Apache-2.0",
+  "scripts": {
+    "start": "npx gulp"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "4.0.2",
+    "gulp-cli": "2.2.0",
+    "ts-node": "8.5.4",
+    "typescript": "3.7.3"
+  }
+}
