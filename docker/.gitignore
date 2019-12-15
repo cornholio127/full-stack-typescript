@@ -1,0 +1,2 @@
+# Ignore built project artifacts
+*/build/**/*
