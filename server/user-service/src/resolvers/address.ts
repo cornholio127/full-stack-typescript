@@ -4,7 +4,7 @@ import { Tables, ShopAddress } from '../gen/db/public';
 import { Record } from 'tsooq';
 import { isId } from './util';
 
-const toAddress = (row: Record): GQLAddress => ({
+const toGQLAddress = (row: Record): GQLAddress => ({
   id: '' + row.get(ShopAddress.ID),
   firstName: row.get(ShopAddress.FIRST_NAME),
   lastName: row.get(ShopAddress.LAST_NAME),
@@ -15,6 +15,14 @@ const toAddress = (row: Record): GQLAddress => ({
   country: row.get(ShopAddress.COUNTRY),
 });
 
+export const addressById = (id: string): Promise<GQLAddress> => {
+  return create
+    .select()
+    .from(Tables.SHOP_ADDRESS)
+    .where(ShopAddress.ID.eq(Number(id)))
+    .fetchSingleMapped(toGQLAddress);
+};
+
 export const userBillingAddress: GQLUserResolvers['billingAddress'] = source => {
   if (!isId(source.billingAddress.id)) {
     return null;
@@ -24,7 +32,7 @@ export const userBillingAddress: GQLUserResolvers['billingAddress'] = source => 
     .select()
     .from(Tables.SHOP_ADDRESS)
     .where(ShopAddress.ID.eq(billingAddressId))
-    .fetchSingleMapped(toAddress);
+    .fetchSingleMapped(toGQLAddress);
 };
 
 export const userShippingAddress: GQLUserResolvers['shippingAddress'] = source => {
@@ -36,5 +44,5 @@ export const userShippingAddress: GQLUserResolvers['shippingAddress'] = source =
     .select()
     .from(Tables.SHOP_ADDRESS)
     .where(ShopAddress.ID.eq(shippingAddressId))
-    .fetchSingleMapped(toAddress);
+    .fetchSingleMapped(toGQLAddress);
 };

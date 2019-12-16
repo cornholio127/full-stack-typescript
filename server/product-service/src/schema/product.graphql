@@ -1,10 +1,10 @@
-type Image {
+type Image @key(fields: "id") {
   id: ID!
   url: String!
   isMain: Boolean!
 }
 
-type Category {
+type Category @key(fields: "id") {
   id: ID!
   name: String!
   products: [Product!]!
@@ -15,7 +15,7 @@ type Price {
   vatPct: String!
 }
 
-type Product {
+type Product @key(fields: "id") {
   id: ID!
   name: String!
   description: String

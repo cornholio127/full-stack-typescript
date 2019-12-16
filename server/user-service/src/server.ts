@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server';
+import { buildFederatedSchema } from '@apollo/federation';
 import { ContextFunction } from 'apollo-server-core';
 import fs from 'fs';
 import * as countryResolver from './resolvers/country';
@@ -10,6 +11,7 @@ import { Request, Response } from 'express';
 import { verifyAuthToken } from './resolvers/util';
 import { JwtPayload } from './resolvers/types';
 import { AuthContext } from './types';
+import { GQLUser, GQLAddress, GQLCountry } from './gen/gql/types';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -30,7 +32,20 @@ const resolvers = {
     countries: countryResolver.countries,
     user: userResolver.user,
   },
+  Address: {
+    __resolveReference: (address: GQLAddress) => {
+      return addressResolver.addressById(address.id);
+    },
+  },
+  Country: {
+    __resolveReference: (country: GQLCountry) => {
+      return countryResolver.countryById(country.id);
+    },
+  },
   User: {
+    __resolveReference: (user: GQLUser) => {
+      return userResolver.userById(user.id);
+    },
     billingAddress: addressResolver.userBillingAddress,
     shippingAddress: addressResolver.userShippingAddress,
   },
@@ -63,8 +78,7 @@ const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
 };
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema: buildFederatedSchema([{ typeDefs, resolvers }]),
   context: createContext,
 });
 

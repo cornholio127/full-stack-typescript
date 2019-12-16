@@ -1,10 +1,10 @@
-type Country {
+type Country @key(fields: "id") {
   id: ID!
   code: String!
   name: String!
 }
 
-type Address {
+type Address @key(fields: "id") {
   id: ID!
   firstName: String!
   lastName: String!
@@ -15,7 +15,7 @@ type Address {
   country: String!
 }
 
-type User {
+type User @key(fields: "id") {
   id: ID!
   email: String!
   billingAddress: Address

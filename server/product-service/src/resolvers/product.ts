@@ -24,6 +24,16 @@ const toGQLProduct = (row: Record): GQLProduct => ({
   images: [],
 });
 
+export const productById = (id: string): Promise<GQLProduct> => {
+  return create
+    .select(...Tables.SHOP_PRODUCT.fields, ShopCategory.NAME)
+    .from(Tables.SHOP_PRODUCT)
+    .join(Tables.SHOP_CATEGORY)
+    .on(ShopProduct.CATEGORY_ID.eq(ShopCategory.ID))
+    .where(ShopProduct.ID.eq(Number(id)))
+    .fetchSingleMapped(toGQLProduct);
+};
+
 export const products: GQLQueryResolvers['products'] = () => {
   return create
     .select(...Tables.SHOP_PRODUCT.fields, ShopCategory.NAME)

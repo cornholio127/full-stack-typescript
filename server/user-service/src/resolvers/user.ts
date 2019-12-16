@@ -3,17 +3,33 @@ import {
   GQLMutationResolvers,
   GQLAddress,
   GQLAddressInput,
+  GQLUser,
 } from '../gen/gql/types';
 import { isId, hashPassword, generateToken } from './util';
 import { create } from '../db';
 import { Tables, ShopUser, ShopLogin, ShopAddress } from '../gen/db/public';
 import { PoolClient } from 'pg';
-import { constantResult, select } from 'tsooq';
+import { constantResult, select, Record } from 'tsooq';
 import { getLogger } from 'log4js';
 import { AuthContext } from '../types';
 
 const addressRef = (id?: number): GQLAddress | undefined =>
   id === undefined ? undefined : ({ id: '' + id } as GQLAddress);
+
+const toGQLUser = (row: Record): GQLUser => ({
+  id: '' + row.get(ShopUser.ID),
+  email: row.get(ShopUser.EMAIL),
+  billingAddress: addressRef(row.get(ShopUser.BILLING_ADDRESS_ID)),
+  shippingAddress: addressRef(row.get(ShopUser.SHIPPING_ADDRESS_ID)),
+});
+
+export const userById = (id: string): Promise<GQLUser> => {
+  return create
+    .select()
+    .from(Tables.SHOP_USER)
+    .where(ShopUser.ID.eq(Number(id)))
+    .fetchSingleMapped(toGQLUser);
+};
 
 export const user: GQLQueryResolvers['user'] = (source, args, context) => {
   const authContext = context as AuthContext;
@@ -24,12 +40,7 @@ export const user: GQLQueryResolvers['user'] = (source, args, context) => {
     .select()
     .from(Tables.SHOP_USER)
     .where(ShopUser.ID.eq(authContext.userId))
-    .fetchSingleMapped(row => ({
-      id: '' + row.get(ShopUser.ID),
-      email: row.get(ShopUser.EMAIL),
-      billingAddress: addressRef(row.get(ShopUser.BILLING_ADDRESS_ID)),
-      shippingAddress: addressRef(row.get(ShopUser.SHIPPING_ADDRESS_ID)),
-    }));
+    .fetchSingleMapped(toGQLUser);
 };
 
 export const insertUser: GQLMutationResolvers['insertUser'] = async (
