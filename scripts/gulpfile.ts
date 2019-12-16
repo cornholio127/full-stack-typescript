@@ -24,7 +24,8 @@ const buildService = (serviceName: string): TaskFunction => {
 
 const buildProductService = buildService('product-service');
 const buildUserService = buildService('user-service');
+const buildFederationService = buildService('federation-service');
 
-const build = series(buildProductService, buildUserService);
+const build = series(buildProductService, buildUserService, buildFederationService);
 
 export default build;

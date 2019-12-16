@@ -18,4 +18,4 @@ RUN npm install --production
 
 EXPOSE 9000
 
-CMD [ "npm" "run" "serve" ]
+CMD [ "npm", "run", "serve" ]
