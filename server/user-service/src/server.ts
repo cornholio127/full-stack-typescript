@@ -5,7 +5,7 @@ import * as countryResolver from './resolvers/country';
 import * as userResolver from './resolvers/user';
 import * as addressResolver from './resolvers/address';
 import * as loginResolver from './resolvers/login';
-import { configure } from 'log4js';
+import { configure, getLogger } from 'log4js';
 import { Request, Response } from 'express';
 import { verifyAuthToken } from './resolvers/util';
 import { JwtPayload } from './resolvers/types';
@@ -70,4 +70,4 @@ const server = new ApolloServer({
 
 server
   .listen({ port: 9000 })
-  .then(({ url }) => console.log(`Server ready at ${url}`));
+  .then(({ url }) => getLogger().info(`Server ready at ${url}`));

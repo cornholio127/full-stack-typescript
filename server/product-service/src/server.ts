@@ -1,6 +1,6 @@
 import { ApolloServer, gql } from 'apollo-server';
 import fs from 'fs';
-import { configure } from 'log4js';
+import { configure, getLogger } from 'log4js';
 import * as productResolver from './resolvers/product';
 import * as categoryResolver from './resolvers/category';
 
@@ -32,4 +32,4 @@ const server = new ApolloServer({ typeDefs, resolvers });
 
 server
   .listen({ port: 9000 })
-  .then(({ url }) => console.log(`Server ready at ${url}`));
+  .then(({ url }) => getLogger().info(`Server ready at ${url}`));
