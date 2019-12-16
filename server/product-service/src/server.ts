@@ -6,6 +6,7 @@ import * as productResolver from './resolvers/product';
 import * as categoryResolver from './resolvers/category';
 import * as imageResolver from './resolvers/image';
 import { GQLProduct, GQLImage, GQLCategory } from './gen/gql/types';
+import env from './env';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -49,5 +50,5 @@ const server = new ApolloServer({
 });
 
 server
-  .listen({ port: 9000 })
+  .listen({ port: env.serverPort })
   .then(({ url }) => getLogger().info(`Server ready at ${url}`));

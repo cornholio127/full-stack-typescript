@@ -6,6 +6,8 @@ services:
         volumes:
          - db_data:/var/lib/postgresql/data
          - db_log:/var/log/postgresql
+        ports:
+         - "5432:5432"
     
     user-service:
         depends_on:
@@ -17,6 +19,7 @@ services:
          - NODE_ENV=production
          - DB_HOST=db
          - DB_PORT=5432
+         - SERVER_PORT=9000
         volumes:
          - user_service_log:/log
         restart: always
@@ -31,6 +34,7 @@ services:
          - NODE_ENV=production
          - DB_HOST=db
          - DB_PORT=5432
+         - SERVER_PORT=9000
         volumes:
          - product_service_log:/log
         restart: always
@@ -44,6 +48,11 @@ services:
         working_dir: /app
         environment:
          - NODE_ENV=production
+         - USER_SERVICE_HOST=user-service
+         - USER_SERVICE_PORT=9000
+         - PRODUCT_SERVICE_HOST=product-service
+         - PRODUCT_SERVICE_PORT=9000
+         - SERVER_PORT=9000
         volumes:
          - federation_service_log:/log
         restart: always

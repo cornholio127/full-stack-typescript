@@ -12,6 +12,7 @@ import { verifyAuthToken } from './resolvers/util';
 import { JwtPayload } from './resolvers/types';
 import { AuthContext } from './types';
 import { GQLUser, GQLAddress, GQLCountry } from './gen/gql/types';
+import env from './env';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -83,5 +84,5 @@ const server = new ApolloServer({
 });
 
 server
-  .listen({ port: 9000 })
+  .listen({ port: env.serverPort })
   .then(({ url }) => getLogger().info(`Server ready at ${url}`));
