@@ -16,7 +16,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "migrate-up": "node-pg-migrate up --tsconfig ./tsconfig.json --ignore-pattern util.ts",
-    "migrate-down": "node-pg-migrate down --tsconfig ./tsconfig.json --ignore-pattern util.ts"
+    "migrate-down": "node-pg-migrate down --tsconfig ./tsconfig.json --ignore-pattern util.ts",
+    "migrate-tsooq": "cross-env NODE_ENV=tsooq node-pg-migrate up --tsconfig ./tsconfig.json --ignore-pattern util.ts"
   },
   "dependencies": {},
   "devDependencies": {

@@ -18,17 +18,19 @@ const installService = (serviceName: string) => task(`install${camelCase(service
 
 installService('product-service');
 installService('user-service');
+installService('order-service');
 installService('federation-service');
 
-export const installServices = series('installProductService', 'installUserService', 'installFederationService');
+export const installServices = series('installProductService', 'installUserService', 'installOrderService', 'installFederationService');
 
 const removeServiceImage = (serviceName: string) => task(`remove${camelCase(serviceName)}Image`, cmd(`docker rmi shop-${serviceName}`, '.'));
 
 removeServiceImage('product-service');
 removeServiceImage('user-service');
+removeServiceImage('order-service');
 removeServiceImage('federation-service');
 
-export const removeServiceImages = series('removeProductServiceImage', 'removeUserServiceImage', 'removeFederationServiceImage');
+export const removeServiceImages = series('removeProductServiceImage', 'removeUserServiceImage', 'removeOrderServiceImage', 'removeFederationServiceImage');
 
 const buildService = (serviceName: string): TaskFunction => {
   const serviceNameCc = camelCase(serviceName);
@@ -44,9 +46,10 @@ const buildService = (serviceName: string): TaskFunction => {
 
 const buildProductService = buildService('product-service');
 const buildUserService = buildService('user-service');
+const buildOrderService = buildService('order-service');
 const buildFederationService = buildService('federation-service');
 
-export const buildServices = series(buildProductService, buildUserService, buildFederationService);
+export const buildServices = series(buildProductService, buildUserService, buildOrderService, buildFederationService);
 
 export const rebuildServices = series(removeServiceImages, buildServices);
 

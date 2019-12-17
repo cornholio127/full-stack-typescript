@@ -33,6 +33,10 @@ const gateway = new ApolloGateway({
       name: 'product-service',
       url: `http://${env.productServiceHost}:${env.productServicePort}`,
     },
+    {
+      name: 'order-service',
+      url: `http://${env.orderServiceHost}:${env.orderServicePort}`,
+    },
   ],
   buildService({ url }) {
     return new CustomRemoteGraphQLDataSource({ url });

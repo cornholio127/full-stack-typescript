@@ -1,0 +1,9 @@
+{
+  "db": {
+    "user": "setup",
+    "password": "s3cr3t",
+    "host": "localhost",
+    "port": 45432,
+    "database": "setup"
+  }
+}
