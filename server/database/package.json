@@ -1,0 +1,40 @@
+{
+  "name": "database",
+  "description": "Database migration",
+  "displayName": "Fullstack TypeScript Shop: Database Migration",
+  "author": {
+    "name": "Mathias Haessig",
+    "email": "cornholio127@live.com",
+    "url": "https://github.com/cornholio127"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cornholio127/full-stack-typescript"
+  },
+  "version": "0.1.0",
+  "private": false,
+  "license": "Apache-2.0",
+  "scripts": {
+    "migrate-up": "node-pg-migrate up --tsconfig ./tsconfig.json --ignore-pattern util.ts",
+    "migrate-down": "node-pg-migrate down --tsconfig ./tsconfig.json --ignore-pattern util.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "12.12.17",
+    "@types/node-fetch": "2.5.4",
+    "@types/pg": "7.11.2",
+    "@typescript-eslint/eslint-plugin": "2.11.0",
+    "@typescript-eslint/parser": "2.11.0",
+    "config": "3.2.4",
+    "cross-env": "6.0.3",
+    "eslint": "6.7.2",
+    "eslint-config-prettier": "6.7.0",
+    "eslint-plugin-prettier": "3.1.1",
+    "node-pg-migrate": "4.1.0",
+    "nodemon": "2.0.1",
+    "pg": "7.14.0",
+    "prettier": "1.19.1",
+    "ts-node": "8.5.4",
+    "typescript": "3.7.3"
+  }
+}

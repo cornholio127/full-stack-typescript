@@ -10,8 +10,28 @@ const cmd = (shellCommand: string, workingDirectory: string): TaskFunction => cb
   cp.on('exit', () => cb());
 };
 
+const camelCase = (s: string): string => s.split('-').map(n => n.substring(0, 1).toUpperCase() + n.substring(1)).join('');
+
+task('buildDatabase', cmd('docker build -t shop-database .', '../docker/database'));
+
+const installService = (serviceName: string) => task(`install${camelCase(serviceName)}`, cmd('npm install', `../server/${serviceName}`));
+
+installService('product-service');
+installService('user-service');
+installService('federation-service');
+
+export const installServices = series('installProductService', 'installUserService', 'installFederationService');
+
+const removeServiceImage = (serviceName: string) => task(`remove${camelCase(serviceName)}Image`, cmd(`docker rmi shop-${serviceName}`, '.'));
+
+removeServiceImage('product-service');
+removeServiceImage('user-service');
+removeServiceImage('federation-service');
+
+export const removeServiceImages = series('removeProductServiceImage', 'removeUserServiceImage', 'removeFederationServiceImage');
+
 const buildService = (serviceName: string): TaskFunction => {
-  const serviceNameCc = serviceName.split('-').map(n => n.substring(0, 1).toUpperCase() + n.substring(1)).join('');
+  const serviceNameCc = camelCase(serviceName);
   const serviceProject = `../server/${serviceName}`;
   const serviceDocker = `../docker/${serviceName}`;
   const dockerImage = `shop-${serviceName}`;
@@ -26,6 +46,8 @@ const buildProductService = buildService('product-service');
 const buildUserService = buildService('user-service');
 const buildFederationService = buildService('federation-service');
 
-const build = series(buildProductService, buildUserService, buildFederationService);
+export const buildServices = series(buildProductService, buildUserService, buildFederationService);
 
-export default build;
+export const rebuildServices = series(removeServiceImages, buildServices);
+
+export default rebuildServices;
