@@ -1,5 +1,17 @@
 import { Field, FieldImpl, Table, TableImpl } from 'tsooq';
 
+export class Pgmigrations extends TableImpl {
+  private static readonly _TABLE_NAME = 'pgmigrations';
+  static readonly ID: Field<number> = new FieldImpl<number>(Pgmigrations._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
+  static readonly NAME: Field<string> = new FieldImpl<string>(Pgmigrations._TABLE_NAME, 2, 'name', undefined, 'character varying', false, false);
+  static readonly RUN_ON: Field<Date> = new FieldImpl<Date>(Pgmigrations._TABLE_NAME, 3, 'run_on', undefined, 'timestamp without time zone', false, false);
+  private static readonly _FIELDS: Field<any>[] = [Pgmigrations.ID, Pgmigrations.NAME, Pgmigrations.RUN_ON];
+
+  constructor() {
+    super(Pgmigrations._TABLE_NAME, undefined, Pgmigrations._FIELDS);
+  }
+}
+
 export class ShopAddress extends TableImpl {
   private static readonly _TABLE_NAME = 'shop_address';
   static readonly ID: Field<number> = new FieldImpl<number>(ShopAddress._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
@@ -67,6 +79,36 @@ export class ShopLogin extends TableImpl {
   }
 }
 
+export class ShopOrder extends TableImpl {
+  private static readonly _TABLE_NAME = 'shop_order';
+  static readonly ID: Field<number> = new FieldImpl<number>(ShopOrder._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
+  static readonly ORDER_NUMBER: Field<string> = new FieldImpl<string>(ShopOrder._TABLE_NAME, 2, 'order_number', undefined, 'character varying', false, false);
+  static readonly USER_ID: Field<number> = new FieldImpl<number>(ShopOrder._TABLE_NAME, 3, 'user_id', undefined, 'integer', false, false);
+  static readonly ORDER_DATE: Field<Date> = new FieldImpl<Date>(ShopOrder._TABLE_NAME, 4, 'order_date', undefined, 'date', false, false);
+  static readonly ORDER_STATUS: Field<string> = new FieldImpl<string>(ShopOrder._TABLE_NAME, 5, 'order_status', undefined, 'character varying', false, false);
+  private static readonly _FIELDS: Field<any>[] = [ShopOrder.ID, ShopOrder.ORDER_NUMBER, ShopOrder.USER_ID, ShopOrder.ORDER_DATE, ShopOrder.ORDER_STATUS];
+
+  constructor() {
+    super(ShopOrder._TABLE_NAME, undefined, ShopOrder._FIELDS);
+  }
+}
+
+export class ShopOrderItem extends TableImpl {
+  private static readonly _TABLE_NAME = 'shop_order_item';
+  static readonly ID: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
+  static readonly ORDER_ID: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 2, 'order_id', undefined, 'integer', false, false);
+  static readonly PRODUCT_ID: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 3, 'product_id', undefined, 'integer', false, false);
+  static readonly QUANTITY: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 4, 'quantity', undefined, 'integer', false, false);
+  static readonly NET_AMOUNT: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 5, 'net_amount', undefined, 'numeric', false, false);
+  static readonly VAT_AMOUNT: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 6, 'vat_amount', undefined, 'numeric', false, false);
+  static readonly GROSS_AMOUNT: Field<number> = new FieldImpl<number>(ShopOrderItem._TABLE_NAME, 7, 'gross_amount', undefined, 'numeric', false, false);
+  private static readonly _FIELDS: Field<any>[] = [ShopOrderItem.ID, ShopOrderItem.ORDER_ID, ShopOrderItem.PRODUCT_ID, ShopOrderItem.QUANTITY, ShopOrderItem.NET_AMOUNT, ShopOrderItem.VAT_AMOUNT, ShopOrderItem.GROSS_AMOUNT];
+
+  constructor() {
+    super(ShopOrderItem._TABLE_NAME, undefined, ShopOrderItem._FIELDS);
+  }
+}
+
 export class ShopProduct extends TableImpl {
   private static readonly _TABLE_NAME = 'shop_product';
   static readonly ID: Field<number> = new FieldImpl<number>(ShopProduct._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
@@ -110,11 +152,14 @@ export class ShopVatGroup extends TableImpl {
 }
 
 export class Tables {
+  static readonly PGMIGRATIONS: Table = new Pgmigrations();
   static readonly SHOP_ADDRESS: Table = new ShopAddress();
   static readonly SHOP_CATEGORY: Table = new ShopCategory();
   static readonly SHOP_COUNTRY: Table = new ShopCountry();
   static readonly SHOP_IMAGE: Table = new ShopImage();
   static readonly SHOP_LOGIN: Table = new ShopLogin();
+  static readonly SHOP_ORDER: Table = new ShopOrder();
+  static readonly SHOP_ORDER_ITEM: Table = new ShopOrderItem();
   static readonly SHOP_PRODUCT: Table = new ShopProduct();
   static readonly SHOP_USER: Table = new ShopUser();
   static readonly SHOP_VAT_GROUP: Table = new ShopVatGroup();

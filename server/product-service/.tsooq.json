@@ -1,5 +1,6 @@
 {
-  "ddlScript": "../database/schema.sql",
+  "migrationCmd": "npm run migrate-tsooq",
+  "migrationWorkingDir": "../database",
   "outputDir": "src/gen/db",
   "schemaName": "public"
 }
