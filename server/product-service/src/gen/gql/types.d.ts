@@ -7,7 +7,13 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  _FieldSet: any,
 };
+
+
+
+
+
 
 export type GQLCategory = {
    __typename?: 'Category',
@@ -57,6 +63,11 @@ export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => Promise<TResult> | TResult;
 
+export type ReferenceResolver<TResult, TReference, TContext> = (
+      reference: TReference,
+      context: TContext,
+      info: GraphQLResolveInfo
+    ) => Promise<TResult> | TResult;
 
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -139,24 +150,13 @@ export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'],
 };
 
-export type GQLCategoryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Category'] = GQLResolversParentTypes['Category']> = {
-  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
-  name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   products?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType>,
-};
-
-export type GQLImageResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Image'] = GQLResolversParentTypes['Image']> = {
-  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
-  url?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
-  isMain?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>,
-};
-
-export type GQLPriceResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Price'] = GQLResolversParentTypes['Price']> = {
-  amount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
-  vatPct?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
 };
 
 export type GQLProductResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Product'] = GQLResolversParentTypes['Product']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Product']>, { __typename: 'Product' } & Pick<ParentType, 'id'>, ContextType>,
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
   description?: Resolver<Maybe<GQLResolversTypes['String']>, ParentType, ContextType>,
@@ -166,17 +166,31 @@ export type GQLProductResolvers<ContextType = any, ParentType extends GQLResolve
   activationDate?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
 };
 
-export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+export type GQLCategoryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Category'] = GQLResolversParentTypes['Category']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Category']>, { __typename: 'Category' } & Pick<ParentType, 'id'>, ContextType>,
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
   products?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType>,
-  categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
+};
+
+export type GQLPriceResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Price'] = GQLResolversParentTypes['Price']> = {
+  amount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  vatPct?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+};
+
+export type GQLImageResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Image'] = GQLResolversParentTypes['Image']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Image']>, { __typename: 'Image' } & Pick<ParentType, 'id'>, ContextType>,
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  url?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  isMain?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
 export type GQLResolvers<ContextType = any> = {
-  Category?: GQLCategoryResolvers<ContextType>,
-  Image?: GQLImageResolvers<ContextType>,
-  Price?: GQLPriceResolvers<ContextType>,
-  Product?: GQLProductResolvers<ContextType>,
   Query?: GQLQueryResolvers<ContextType>,
+  Product?: GQLProductResolvers<ContextType>,
+  Category?: GQLCategoryResolvers<ContextType>,
+  Price?: GQLPriceResolvers<ContextType>,
+  Image?: GQLImageResolvers<ContextType>,
 };
 
 

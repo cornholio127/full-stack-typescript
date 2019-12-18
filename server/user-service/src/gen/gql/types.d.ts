@@ -8,7 +8,13 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  _FieldSet: any,
 };
+
+
+
+
+
 
 export type GQLActivateUserInput = {
   email: Scalars['String'],
@@ -114,6 +120,11 @@ export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => Promise<TResult> | TResult;
 
+export type ReferenceResolver<TResult, TReference, TContext> = (
+      reference: TReference,
+      context: TContext,
+      info: GraphQLResolveInfo
+    ) => Promise<TResult> | TResult;
 
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -206,7 +217,21 @@ export type GQLResolversParentTypes = {
   LoginInput: GQLLoginInput,
 };
 
+export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
+  user?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>,
+  countries?: Resolver<Array<GQLResolversTypes['Country']>, ParentType, ContextType>,
+};
+
+export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['User']>, { __typename: 'User' } & Pick<ParentType, 'id'>, ContextType>,
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  email?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  billingAddress?: Resolver<Maybe<GQLResolversTypes['Address']>, ParentType, ContextType>,
+  shippingAddress?: Resolver<Maybe<GQLResolversTypes['Address']>, ParentType, ContextType>,
+};
+
 export type GQLAddressResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Address'] = GQLResolversParentTypes['Address']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Address']>, { __typename: 'Address' } & Pick<ParentType, 'id'>, ContextType>,
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
   firstName?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
   lastName?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
@@ -218,6 +243,7 @@ export type GQLAddressResolvers<ContextType = any, ParentType extends GQLResolve
 };
 
 export type GQLCountryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Country'] = GQLResolversParentTypes['Country']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Country']>, { __typename: 'Country' } & Pick<ParentType, 'id'>, ContextType>,
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
   code?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
   name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
@@ -230,24 +256,12 @@ export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolv
   login?: Resolver<GQLResolversTypes['String'], ParentType, ContextType, GQLMutationLoginArgs>,
 };
 
-export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  user?: Resolver<Maybe<GQLResolversTypes['User']>, ParentType, ContextType>,
-  countries?: Resolver<Array<GQLResolversTypes['Country']>, ParentType, ContextType>,
-};
-
-export type GQLUserResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['User'] = GQLResolversParentTypes['User']> = {
-  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
-  email?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
-  billingAddress?: Resolver<Maybe<GQLResolversTypes['Address']>, ParentType, ContextType>,
-  shippingAddress?: Resolver<Maybe<GQLResolversTypes['Address']>, ParentType, ContextType>,
-};
-
 export type GQLResolvers<ContextType = any> = {
+  Query?: GQLQueryResolvers<ContextType>,
+  User?: GQLUserResolvers<ContextType>,
   Address?: GQLAddressResolvers<ContextType>,
   Country?: GQLCountryResolvers<ContextType>,
   Mutation?: GQLMutationResolvers<ContextType>,
-  Query?: GQLQueryResolvers<ContextType>,
-  User?: GQLUserResolvers<ContextType>,
 };
 
 

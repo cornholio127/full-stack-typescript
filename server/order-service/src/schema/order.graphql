@@ -1,3 +1,30 @@
-type Order {
+extend type Product @key(fields: "id") {
+  id: ID! @external
+}
+
+enum OrderStatus {
+  CREATED
+  CANCELLED
+  PAID
+  SHIPPED
+}
+
+type Order @key(fields: "id") {
   id: ID!
+  orderNumber: String!
+  orderDate: String!
+  orderStatus: OrderStatus!
+  items: [OrderItem!]!
+  totalNetAmount: String!
+  totalVatAmount: String!
+  totalGrossAmount: String!
+}
+
+type OrderItem @key(fields: "id") {
+  id: ID!
+  product: Product!
+  quantity: Int!
+  netAmount: String!
+  vatAmount: String!
+  grossAmount: String!
 }

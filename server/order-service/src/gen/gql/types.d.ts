@@ -7,10 +7,45 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  _FieldSet: any,
 };
+
+
+
+
+
 
 export type GQLOrder = {
    __typename?: 'Order',
+  id: Scalars['ID'],
+  orderNumber: Scalars['String'],
+  orderDate: Scalars['String'],
+  orderStatus: GQLOrderStatus,
+  items: Array<GQLOrderItem>,
+  totalNetAmount: Scalars['String'],
+  totalVatAmount: Scalars['String'],
+  totalGrossAmount: Scalars['String'],
+};
+
+export type GQLOrderItem = {
+   __typename?: 'OrderItem',
+  id: Scalars['ID'],
+  product: GQLProduct,
+  quantity: Scalars['Int'],
+  netAmount: Scalars['String'],
+  vatAmount: Scalars['String'],
+  grossAmount: Scalars['String'],
+};
+
+export enum GQLOrderStatus {
+  Created = 'CREATED',
+  Cancelled = 'CANCELLED',
+  Paid = 'PAID',
+  Shipped = 'SHIPPED'
+}
+
+export type GQLProduct = {
+   __typename?: 'Product',
   id: Scalars['ID'],
 };
 
@@ -25,6 +60,11 @@ export type ResolverFn<TResult, TParent, TContext, TArgs> = (
   info: GraphQLResolveInfo
 ) => Promise<TResult> | TResult;
 
+export type ReferenceResolver<TResult, TReference, TContext> = (
+      reference: TReference,
+      context: TContext,
+      info: GraphQLResolveInfo
+    ) => Promise<TResult> | TResult;
 
 export type StitchingResolver<TResult, TParent, TContext, TArgs> = {
   fragment: string;
@@ -87,24 +127,57 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type GQLResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  Order: ResolverTypeWrapper<GQLOrder>,
+  Product: ResolverTypeWrapper<GQLProduct>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
+  OrderStatus: GQLOrderStatus,
+  Order: ResolverTypeWrapper<GQLOrder>,
+  OrderItem: ResolverTypeWrapper<GQLOrderItem>,
+  Int: ResolverTypeWrapper<Scalars['Int']>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
-  Order: GQLOrder,
+  Product: GQLProduct,
   ID: Scalars['ID'],
+  OrderStatus: GQLOrderStatus,
+  Order: GQLOrder,
+  OrderItem: GQLOrderItem,
+  Int: Scalars['Int'],
+};
+
+export type GQLProductResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Product'] = GQLResolversParentTypes['Product']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Product']>, { __typename: 'Product' } & Pick<ParentType, 'id'>, ContextType>,
+
 };
 
 export type GQLOrderResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Order'] = GQLResolversParentTypes['Order']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['Order']>, { __typename: 'Order' } & Pick<ParentType, 'id'>, ContextType>,
   id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  orderNumber?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  orderDate?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  orderStatus?: Resolver<GQLResolversTypes['OrderStatus'], ParentType, ContextType>,
+  items?: Resolver<Array<GQLResolversTypes['OrderItem']>, ParentType, ContextType>,
+  totalNetAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  totalVatAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  totalGrossAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+};
+
+export type GQLOrderItemResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['OrderItem'] = GQLResolversParentTypes['OrderItem']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['OrderItem']>, { __typename: 'OrderItem' } & Pick<ParentType, 'id'>, ContextType>,
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  product?: Resolver<GQLResolversTypes['Product'], ParentType, ContextType>,
+  quantity?: Resolver<GQLResolversTypes['Int'], ParentType, ContextType>,
+  netAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  vatAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  grossAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
 };
 
 export type GQLResolvers<ContextType = any> = {
+  Product?: GQLProductResolvers<ContextType>,
   Order?: GQLOrderResolvers<ContextType>,
+  OrderItem?: GQLOrderItemResolvers<ContextType>,
 };
 
 

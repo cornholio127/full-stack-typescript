@@ -2,8 +2,9 @@ import { ApolloServer, gql } from 'apollo-server';
 import { buildFederatedSchema } from '@apollo/federation';
 import fs from 'fs';
 import { configure, getLogger } from 'log4js';
-import * as orderResolver from './resolvers/product';
-import { GQLProduct, GQLImage, GQLCategory } from './gen/gql/types';
+import * as orderResolver from './resolvers/order';
+import * as orderItemResolver from './resolvers/orderitem';
+import { GQLOrder, GQLOrderItem } from './gen/gql/types';
 import env from './env';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
@@ -22,23 +23,16 @@ const typeDefs = gql(
 );
 const resolvers = {
   Query: {
-    products: productResolver.products,
-    categories: categoryResolver.categories,
+    orders: orderResolver.orders,
   },
-  Category: {
-    __resolveReference: (category: GQLCategory) => {
-      return categoryResolver.categoryById(category.id);
-    },
-    products: productResolver.categoryProducts,
-  },
-  Product: {
-    __resolveReference: (product: GQLProduct) => {
-      return productResolver.productById(product.id);
+  Order: {
+    __resolveReference: (order: GQLOrder) => {
+      return orderResolver.orderById(order.id);
     },
   },
-  Image: {
-    __resolveReference: (image: GQLImage) => {
-      return imageResolver.imageById(image.id);
+  OrderItem: {
+    __resolveReference: (orderItem: GQLOrderItem) => {
+      return orderItemResolver.orderItemById(orderItem.id);
     },
   },
 };
