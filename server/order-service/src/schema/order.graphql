@@ -28,3 +28,7 @@ type OrderItem @key(fields: "id") {
   vatAmount: String!
   grossAmount: String!
 }
+
+type Query {
+  orders: [Order!]!
+}

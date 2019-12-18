@@ -19,7 +19,7 @@ configure({
 });
 
 const typeDefs = gql(
-  fs.readFileSync(__dirname.concat('/schema/product.graphql'), 'utf8')
+  fs.readFileSync(__dirname.concat('/schema/order.graphql'), 'utf8')
 );
 const resolvers = {
   Query: {
