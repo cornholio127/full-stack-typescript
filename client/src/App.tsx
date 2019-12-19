@@ -33,6 +33,12 @@ const App: React.FC = () => {
         <Route path="/basket">
           <pages.Basket />
         </Route>
+        <Route path="/login">
+          <pages.Login />
+        </Route>
+        <Route path="/cms">
+          <pages.Cms />
+        </Route>
       </Grommet>
     </Router>
   );

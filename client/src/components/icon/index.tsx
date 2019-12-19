@@ -8,7 +8,7 @@ import { ReactComponent as ShoppingBag } from './shopping-bag.svg';
 import { ReactComponent as Target } from './target.svg';
 import { ReactComponent as X } from './x.svg';
 
-type IconType =
+export type IconType =
   | 'chevron-left'
   | 'chevron-right'
   | 'lock'

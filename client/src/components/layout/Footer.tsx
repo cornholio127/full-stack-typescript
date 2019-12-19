@@ -6,26 +6,28 @@ const Footer: React.FC = () => {
   return (
     <HorizontalItems>
       <List title="Contact">
-        <Link>Contact form</Link>
+        <Link url="/cms/contact/form">Contact form</Link>
       </List>
       <List title="Help">
-        <Link>Delivery</Link>
-        <Link>Payment opetions</Link>
-        <Link>Return policy</Link>
-        <Link>Warranty</Link>
+        <Link url="/cms/help/delivery">Delivery</Link>
+        <Link url="/cms/help/payment-options">Payment opetions</Link>
+        <Link url="/cms/help/return-policy">Return policy</Link>
+        <Link url="/cms/help/warranty">Warranty</Link>
       </List>
       <List title="About us">
-        <Link>Shop AG</Link>
-        <Link>Company</Link>
-        <Link>Board members</Link>
-        <Link>Terms &amp; conditions</Link>
-        <Link>Privacy</Link>
-        <Link>Disclaimer</Link>
+        <Link url="/cms/about/shop-ag">Shop AG</Link>
+        <Link url="/cms/about/company">Company</Link>
+        <Link url="/cms/about/board-members">Board members</Link>
+        <Link url="/cms/about/terms-and-conditions">
+          Terms &amp; conditions
+        </Link>
+        <Link url="/cms/about/privacy">Privacy</Link>
+        <Link url="/cms/about/disclaimer">Disclaimer</Link>
       </List>
       <List title="Locations">
-        <Link>Zurich</Link>
-        <Link>Bern</Link>
-        <Link>Lausanne</Link>
+        <Link url="/cms/locations/zurich">Zurich</Link>
+        <Link url="/cms/locations/bern">Bern</Link>
+        <Link url="/cms/locations/lausanne">Lausanne</Link>
       </List>
     </HorizontalItems>
   );

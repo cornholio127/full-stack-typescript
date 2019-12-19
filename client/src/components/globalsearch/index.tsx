@@ -8,6 +8,7 @@ const GlobalSearch: React.FC = () => {
   };
   return (
     <TextInput
+      name="search"
       value={value}
       onChange={onChange}
       placeholder="Search products"
