@@ -7,9 +7,12 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 const theme = deepMerge(grommet, {
   global: {
     font: {
-      family: 'Arial',
+      family: 'Barlow Semi Condensed',
       size: '16px',
       height: '18px',
+    },
+    colors: {
+      brand: '#ef98a8',
     },
   },
 });
@@ -21,10 +24,10 @@ const App: React.FC = () => {
         <Route path="/" exact={true}>
           <pages.Home />
         </Route>
-        <Route path="/cat-:slug" exact={true}>
+        <Route path="/tag/:slug" exact={true}>
           <pages.Category />
         </Route>
-        <Route path="/cat-:catslug/:prodslug">
+        <Route path="/tag/:catslug/:prodslug">
           <pages.Product />
         </Route>
         <Route path="/basket">

@@ -1,0 +1,36 @@
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 300;
+  src: url('BarlowSemiCondensed-Light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 400;
+  src: url('BarlowSemiCondensed-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 500;
+  src: url('BarlowSemiCondensed-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 600;
+  src: url('BarlowSemiCondensed-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 700;
+  src: url('BarlowSemiCondensed-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  font-style: normal;
+  font-weight: 900;
+  src: url('BarlowSemiCondensed-Black.ttf') format('truetype');
+}
