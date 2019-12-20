@@ -13,6 +13,17 @@ const theme = deepMerge(grommet, {
     },
     colors: {
       brand: '#ef98a8',
+      placeholder: '#cacacd',
+    },
+    control: {
+      border: {
+        color: '#666668',
+      },
+    },
+    focus: {
+      border: {
+        color: '#123456',
+      },
     },
   },
 });

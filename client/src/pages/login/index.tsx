@@ -3,6 +3,7 @@ import Layout from '../../components/layout';
 import { TextInput } from '../../components/input';
 import Form, { Row } from '../../components/form';
 import { Formik } from 'formik';
+import { SubmitButton } from '../../components/button';
 
 interface FormValues {
   email: string;
@@ -17,7 +18,11 @@ const Login: React.FC = () => {
   };
   return (
     <Layout>
-      <Formik initialValues={INITIAL_VALUES} onSubmit={submitLogin}>
+      <Formik
+        initialValues={INITIAL_VALUES}
+        onSubmit={submitLogin}
+        isInitialValid={false}
+      >
         {formik => (
           <Form title="Login">
             <Row label="Email">
@@ -36,6 +41,9 @@ const Login: React.FC = () => {
                 onChange={formik.handleChange}
                 password={true}
               />
+            </Row>
+            <Row margin={true}>
+              <SubmitButton label="Submit" disabled={!formik.isValid} />
             </Row>
           </Form>
         )}
