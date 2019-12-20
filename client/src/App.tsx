@@ -3,6 +3,8 @@ import * as pages from './pages';
 import { Grommet, grommet } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
 
 const theme = deepMerge(grommet, {
   global: {
@@ -28,30 +30,34 @@ const theme = deepMerge(grommet, {
   },
 });
 
+const client = new ApolloClient({ uri: 'http://localhost:9000' });
+
 const App: React.FC = () => {
   return (
-    <Router>
-      <Grommet theme={theme}>
-        <Route path="/" exact={true}>
-          <pages.Home />
-        </Route>
-        <Route path="/tag/:slug" exact={true}>
-          <pages.Category />
-        </Route>
-        <Route path="/tag/:catslug/:prodslug">
-          <pages.Product />
-        </Route>
-        <Route path="/basket">
-          <pages.Basket />
-        </Route>
-        <Route path="/login">
-          <pages.Login />
-        </Route>
-        <Route path="/cms">
-          <pages.Cms />
-        </Route>
-      </Grommet>
-    </Router>
+    <ApolloProvider client={client}>
+      <Router>
+        <Grommet theme={theme}>
+          <Route path="/" exact={true}>
+            <pages.Home />
+          </Route>
+          <Route path="/tag/:slug" exact={true}>
+            <pages.Category />
+          </Route>
+          <Route path="/tag/:catslug/:prodslug">
+            <pages.Product />
+          </Route>
+          <Route path="/basket">
+            <pages.Basket />
+          </Route>
+          <Route path="/login">
+            <pages.Login />
+          </Route>
+          <Route path="/cms">
+            <pages.Cms />
+          </Route>
+        </Grommet>
+      </Router>
+    </ApolloProvider>
   );
 };
 

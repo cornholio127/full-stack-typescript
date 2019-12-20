@@ -2,12 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import SidebarItem from './SidebarItem';
 import { Heading } from 'grommet';
-
-const categories = [
-  'Cheap bad products',
-  'Normal products',
-  'Expensive luxury products',
-];
+import gql from 'graphql-tag';
+import { useQuery } from '@apollo/react-hooks';
+import { AllCategories } from './AllCategories';
 
 const StyledList = styled.ul`
   margin: 0;
@@ -32,7 +29,20 @@ const StyledList = styled.ul`
   }
 `;
 
+const categoriesQuery = gql`
+  query AllCategories {
+    categories {
+      id
+      name
+    }
+  }
+`;
+
 const Sidebar: React.FC = () => {
+  const { data } = useQuery<AllCategories>(categoriesQuery, {
+    fetchPolicy: 'cache-first',
+  });
+  const categories = (data && data.categories) || [];
   return (
     <>
       <Heading level={3} margin={{ left: '24px' }}>
@@ -41,7 +51,7 @@ const Sidebar: React.FC = () => {
       <StyledList>
         {categories.map((c, i) => (
           <li>
-            <SidebarItem key={i} label={c} />
+            <SidebarItem key={i} label={c.name} />
           </li>
         ))}
       </StyledList>
