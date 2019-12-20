@@ -1,4 +1,4 @@
-FROM node:13.3-alpine
+FROM node:13.5-alpine
 
 RUN mkdir /log
 RUN chmod 777 /log
