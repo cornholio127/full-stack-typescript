@@ -27,5 +27,24 @@ type Product @key(fields: "id") {
 
 type Query {
   products: [Product!]!
+  searchProducts(categoryId: ID!, filters: String, orderBy: String): [Product!]!
   categories: [Category!]!
+  categoryById(id: ID!): Category
+}
+
+input InsertImageInput {
+  url: String!
+  isMain: Boolean!
+}
+
+input InsertProductInput {
+  name: String!
+  description: String
+  categoryId: ID!
+  price: String!
+  images: [InsertImageInput!]!
+}
+
+type Mutation {
+  insertProduct(product: InsertProductInput!): ID!
 }

@@ -1,5 +1,6 @@
 import { GraphQLResolveInfo } from 'graphql';
 export type Maybe<T> = T | null;
+export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string,
@@ -29,6 +30,29 @@ export type GQLImage = {
   isMain: Scalars['Boolean'],
 };
 
+export type GQLInsertImageInput = {
+  url: Scalars['String'],
+  isMain: Scalars['Boolean'],
+};
+
+export type GQLInsertProductInput = {
+  name: Scalars['String'],
+  description?: Maybe<Scalars['String']>,
+  categoryId: Scalars['ID'],
+  price: Scalars['String'],
+  images: Array<GQLInsertImageInput>,
+};
+
+export type GQLMutation = {
+   __typename?: 'Mutation',
+  insertProduct: Scalars['ID'],
+};
+
+
+export type GQLMutationInsertProductArgs = {
+  product: GQLInsertProductInput
+};
+
 export type GQLPrice = {
    __typename?: 'Price',
   amount: Scalars['String'],
@@ -49,7 +73,21 @@ export type GQLProduct = {
 export type GQLQuery = {
    __typename?: 'Query',
   products: Array<GQLProduct>,
+  searchProducts: Array<GQLProduct>,
   categories: Array<GQLCategory>,
+  categoryById?: Maybe<GQLCategory>,
+};
+
+
+export type GQLQuerySearchProductsArgs = {
+  categoryId: Scalars['ID'],
+  filters?: Maybe<Scalars['String']>,
+  orderBy?: Maybe<Scalars['String']>
+};
+
+
+export type GQLQueryCategoryByIdArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -136,6 +174,9 @@ export type GQLResolversTypes = {
   Price: ResolverTypeWrapper<GQLPrice>,
   Image: ResolverTypeWrapper<GQLImage>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  Mutation: ResolverTypeWrapper<{}>,
+  InsertProductInput: GQLInsertProductInput,
+  InsertImageInput: GQLInsertImageInput,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -148,11 +189,16 @@ export type GQLResolversParentTypes = {
   Price: GQLPrice,
   Image: GQLImage,
   Boolean: Scalars['Boolean'],
+  Mutation: {},
+  InsertProductInput: GQLInsertProductInput,
+  InsertImageInput: GQLInsertImageInput,
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   products?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType>,
+  searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId'>>,
   categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
+  categoryById?: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQueryCategoryByIdArgs, 'id'>>,
 };
 
 export type GQLProductResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Product'] = GQLResolversParentTypes['Product']> = {
@@ -185,12 +231,17 @@ export type GQLImageResolvers<ContextType = any, ParentType extends GQLResolvers
   isMain?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
+export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
+  insertProduct?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType, RequireFields<GQLMutationInsertProductArgs, 'product'>>,
+};
+
 export type GQLResolvers<ContextType = any> = {
   Query?: GQLQueryResolvers<ContextType>,
   Product?: GQLProductResolvers<ContextType>,
   Category?: GQLCategoryResolvers<ContextType>,
   Price?: GQLPriceResolvers<ContextType>,
   Image?: GQLImageResolvers<ContextType>,
+  Mutation?: GQLMutationResolvers<ContextType>,
 };
 
 

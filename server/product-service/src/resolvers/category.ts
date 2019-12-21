@@ -17,6 +17,11 @@ export const categoryById = (id: string): Promise<GQLCategory> => {
     .fetchSingleMapped(toGQLCategory);
 };
 
+export const categoryByIdGql: GQLQueryResolvers['categoryById'] = (
+  parent,
+  args
+) => categoryById(args.id);
+
 export const categories: GQLQueryResolvers['categories'] = () => {
   return create
     .select()

@@ -25,7 +25,9 @@ const typeDefs = gql(
 const resolvers = {
   Query: {
     products: productResolver.products,
+    searchProducts: productResolver.searchProducts,
     categories: categoryResolver.categories,
+    categoryById: categoryResolver.categoryByIdGql,
   },
   Category: {
     __resolveReference: (category: GQLCategory) => {
@@ -42,6 +44,9 @@ const resolvers = {
     __resolveReference: (image: GQLImage) => {
       return imageResolver.imageById(image.id);
     },
+  },
+  Mutation: {
+    insertProduct: productResolver.insertProduct,
   },
 };
 
