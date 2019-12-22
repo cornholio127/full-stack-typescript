@@ -12,6 +12,7 @@ import {
   ShopCategory,
   ShopVatGroup,
   ShopImage,
+  ShopProductAttr,
 } from '../gen/db/public';
 import { DbFunctions, Record } from 'tsooq';
 import { PoolClient } from 'pg';
@@ -35,6 +36,7 @@ const toGQLProduct = (row: Record): GQLProduct => ({
     vatPct: '' + row.get(ShopVatGroup.PERCENTAGE),
   },
   images: [],
+  specification: [],
 });
 
 const toGQLImage = (row: Record): GQLImage => ({
@@ -43,26 +45,40 @@ const toGQLImage = (row: Record): GQLImage => ({
   url: row.get(ShopImage.URL),
 });
 
-export const productById = (id: string): Promise<GQLProduct> => {
-  return create
-    .select(...Tables.SHOP_PRODUCT.fields, ShopCategory.NAME)
+export const productById = async (id: string): Promise<GQLProduct> => {
+  const recs = await create
+    .select(
+      ...Tables.SHOP_PRODUCT.fields,
+      categoryName,
+      ShopVatGroup.PERCENTAGE,
+      imageId,
+      ShopImage.URL,
+      ShopImage.IS_MAIN
+    )
     .from(Tables.SHOP_PRODUCT)
     .join(Tables.SHOP_CATEGORY)
     .on(ShopProduct.CATEGORY_ID.eq(ShopCategory.ID))
+    .join(Tables.SHOP_VAT_GROUP)
+    .on(ShopProduct.VAT_GROUP_ID.eq(ShopVatGroup.ID))
+    .join(Tables.SHOP_IMAGE)
+    .on(ShopImage.PRODUCT_ID.eq(ShopProduct.ID))
     .where(ShopProduct.ID.eq(Number(id)))
-    .fetchSingleMapped(toGQLProduct);
+    .fetch();
+  if (recs.length === 0) {
+    return null;
+  }
+  return mapGroup(
+    groupBy(recs, ShopProduct.ID),
+    toGQLProduct,
+    toGQLImage,
+    'images'
+  )[0];
 };
 
-export const products: GQLQueryResolvers['products'] = () => {
-  return create
-    .select(...Tables.SHOP_PRODUCT.fields, ShopCategory.NAME)
-    .from(Tables.SHOP_PRODUCT)
-    .join(Tables.SHOP_CATEGORY)
-    .on(ShopProduct.CATEGORY_ID.eq(ShopCategory.ID))
-    .where(ShopProduct.ACTIVATION_DATE.lte(DbFunctions.now()))
-    .orderBy(ShopProduct.ACTIVATION_DATE.desc())
-    .fetchMapped(toGQLProduct);
-};
+export const productByIdGql: GQLQueryResolvers['productById'] = (
+  source,
+  args
+) => productById(args.id);
 
 export const categoryProducts: GQLCategoryResolvers['products'] = source => {
   const categoryId = Number(source.id);
@@ -158,6 +174,17 @@ export const insertProduct: GQLMutationResolvers['insertProduct'] = async (
           ShopImage.IS_MAIN
         )
         .values(productResult.value, img.url, img.isMain)
+        .runnable()(client);
+    }
+    for (const attr of product.specification) {
+      await create
+        .insertInto(
+          Tables.SHOP_PRODUCT_ATTR,
+          ShopProductAttr.PRODUCT_ID,
+          ShopProductAttr.ATTR_TYPE_ID,
+          ShopProductAttr.VALUE
+        )
+        .values(productResult.value, Number(attr.typeId), attr.value)
         .runnable()(client);
     }
     return productResult;

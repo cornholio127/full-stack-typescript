@@ -5,6 +5,7 @@ import { configure, getLogger } from 'log4js';
 import * as productResolver from './resolvers/product';
 import * as categoryResolver from './resolvers/category';
 import * as imageResolver from './resolvers/image';
+import * as specificationResolver from './resolvers/specification';
 import { GQLProduct, GQLImage, GQLCategory } from './gen/gql/types';
 import env from './env';
 
@@ -24,7 +25,7 @@ const typeDefs = gql(
 );
 const resolvers = {
   Query: {
-    products: productResolver.products,
+    productById: productResolver.productByIdGql,
     searchProducts: productResolver.searchProducts,
     categories: categoryResolver.categories,
     categoryById: categoryResolver.categoryByIdGql,
@@ -39,6 +40,7 @@ const resolvers = {
     __resolveReference: (product: GQLProduct) => {
       return productResolver.productById(product.id);
     },
+    specification: specificationResolver.productSpecification,
   },
   Image: {
     __resolveReference: (image: GQLImage) => {

@@ -35,12 +35,18 @@ export type GQLInsertImageInput = {
   isMain: Scalars['Boolean'],
 };
 
+export type GQLInsertProductAttributeInput = {
+  typeId: Scalars['ID'],
+  value: Scalars['String'],
+};
+
 export type GQLInsertProductInput = {
   name: Scalars['String'],
   description?: Maybe<Scalars['String']>,
   categoryId: Scalars['ID'],
   price: Scalars['String'],
   images: Array<GQLInsertImageInput>,
+  specification: Array<GQLInsertProductAttributeInput>,
 };
 
 export type GQLMutation = {
@@ -68,14 +74,34 @@ export type GQLProduct = {
   price: GQLPrice,
   images: Array<GQLImage>,
   activationDate: Scalars['String'],
+  specification: Array<GQLProductAttributeCategory>,
+};
+
+export type GQLProductAttribute = {
+   __typename?: 'ProductAttribute',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  value: Scalars['String'],
+};
+
+export type GQLProductAttributeCategory = {
+   __typename?: 'ProductAttributeCategory',
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  attributes: Array<GQLProductAttribute>,
 };
 
 export type GQLQuery = {
    __typename?: 'Query',
-  products: Array<GQLProduct>,
+  productById?: Maybe<GQLProduct>,
   searchProducts: Array<GQLProduct>,
   categories: Array<GQLCategory>,
   categoryById?: Maybe<GQLCategory>,
+};
+
+
+export type GQLQueryProductByIdArgs = {
+  id: Scalars['ID']
 };
 
 
@@ -167,35 +193,41 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type GQLResolversTypes = {
   Query: ResolverTypeWrapper<{}>,
-  Product: ResolverTypeWrapper<GQLProduct>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
+  Product: ResolverTypeWrapper<GQLProduct>,
   String: ResolverTypeWrapper<Scalars['String']>,
   Category: ResolverTypeWrapper<GQLCategory>,
   Price: ResolverTypeWrapper<GQLPrice>,
   Image: ResolverTypeWrapper<GQLImage>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
+  ProductAttributeCategory: ResolverTypeWrapper<GQLProductAttributeCategory>,
+  ProductAttribute: ResolverTypeWrapper<GQLProductAttribute>,
   Mutation: ResolverTypeWrapper<{}>,
   InsertProductInput: GQLInsertProductInput,
   InsertImageInput: GQLInsertImageInput,
+  InsertProductAttributeInput: GQLInsertProductAttributeInput,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type GQLResolversParentTypes = {
   Query: {},
-  Product: GQLProduct,
   ID: Scalars['ID'],
+  Product: GQLProduct,
   String: Scalars['String'],
   Category: GQLCategory,
   Price: GQLPrice,
   Image: GQLImage,
   Boolean: Scalars['Boolean'],
+  ProductAttributeCategory: GQLProductAttributeCategory,
+  ProductAttribute: GQLProductAttribute,
   Mutation: {},
   InsertProductInput: GQLInsertProductInput,
   InsertImageInput: GQLInsertImageInput,
+  InsertProductAttributeInput: GQLInsertProductAttributeInput,
 };
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
-  products?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType>,
+  productById?: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductByIdArgs, 'id'>>,
   searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId'>>,
   categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
   categoryById?: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQueryCategoryByIdArgs, 'id'>>,
@@ -210,6 +242,7 @@ export type GQLProductResolvers<ContextType = any, ParentType extends GQLResolve
   price?: Resolver<GQLResolversTypes['Price'], ParentType, ContextType>,
   images?: Resolver<Array<GQLResolversTypes['Image']>, ParentType, ContextType>,
   activationDate?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  specification?: Resolver<Array<GQLResolversTypes['ProductAttributeCategory']>, ParentType, ContextType>,
 };
 
 export type GQLCategoryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Category'] = GQLResolversParentTypes['Category']> = {
@@ -231,6 +264,19 @@ export type GQLImageResolvers<ContextType = any, ParentType extends GQLResolvers
   isMain?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType>,
 };
 
+export type GQLProductAttributeCategoryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['ProductAttributeCategory'] = GQLResolversParentTypes['ProductAttributeCategory']> = {
+  __resolveReference?: ReferenceResolver<Maybe<GQLResolversTypes['ProductAttributeCategory']>, { __typename: 'ProductAttributeCategory' } & Pick<ParentType, 'id'>, ContextType>,
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  attributes?: Resolver<Array<GQLResolversTypes['ProductAttribute']>, ParentType, ContextType>,
+};
+
+export type GQLProductAttributeResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['ProductAttribute'] = GQLResolversParentTypes['ProductAttribute']> = {
+  id?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType>,
+  name?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+  value?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
+};
+
 export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
   insertProduct?: Resolver<GQLResolversTypes['ID'], ParentType, ContextType, RequireFields<GQLMutationInsertProductArgs, 'product'>>,
 };
@@ -241,6 +287,8 @@ export type GQLResolvers<ContextType = any> = {
   Category?: GQLCategoryResolvers<ContextType>,
   Price?: GQLPriceResolvers<ContextType>,
   Image?: GQLImageResolvers<ContextType>,
+  ProductAttributeCategory?: GQLProductAttributeCategoryResolvers<ContextType>,
+  ProductAttribute?: GQLProductAttributeResolvers<ContextType>,
   Mutation?: GQLMutationResolvers<ContextType>,
 };
 

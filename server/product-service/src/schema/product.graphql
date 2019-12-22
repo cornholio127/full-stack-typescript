@@ -15,6 +15,18 @@ type Price {
   vatPct: String!
 }
 
+type ProductAttribute {
+  id: ID!
+  name: String!
+  value: String!
+}
+
+type ProductAttributeCategory @key(fields: "id") {
+  id: ID!
+  name: String!
+  attributes: [ProductAttribute!]!
+}
+
 type Product @key(fields: "id") {
   id: ID!
   name: String!
@@ -23,10 +35,11 @@ type Product @key(fields: "id") {
   price: Price!
   images: [Image!]!
   activationDate: String!
+  specification: [ProductAttributeCategory!]!
 }
 
 type Query {
-  products: [Product!]!
+  productById(id:ID!): Product
   searchProducts(categoryId: ID!, filters: String, orderBy: String): [Product!]!
   categories: [Category!]!
   categoryById(id: ID!): Category
@@ -37,12 +50,18 @@ input InsertImageInput {
   isMain: Boolean!
 }
 
+input InsertProductAttributeInput {
+  typeId: ID!
+  value: String!
+}
+
 input InsertProductInput {
   name: String!
   description: String
   categoryId: ID!
   price: String!
   images: [InsertImageInput!]!
+  specification: [InsertProductAttributeInput!]!
 }
 
 type Mutation {

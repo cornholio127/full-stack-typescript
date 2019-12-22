@@ -125,6 +125,42 @@ export class ShopProduct extends TableImpl {
   }
 }
 
+export class ShopProductAttr extends TableImpl {
+  private static readonly _TABLE_NAME = 'shop_product_attr';
+  static readonly ID: Field<number> = new FieldImpl<number>(ShopProductAttr._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
+  static readonly PRODUCT_ID: Field<number> = new FieldImpl<number>(ShopProductAttr._TABLE_NAME, 2, 'product_id', undefined, 'integer', false, false);
+  static readonly ATTR_TYPE_ID: Field<number> = new FieldImpl<number>(ShopProductAttr._TABLE_NAME, 3, 'attr_type_id', undefined, 'integer', false, false);
+  static readonly VALUE: Field<string> = new FieldImpl<string>(ShopProductAttr._TABLE_NAME, 4, 'value', undefined, 'character varying', false, false);
+  private static readonly _FIELDS: Field<any>[] = [ShopProductAttr.ID, ShopProductAttr.PRODUCT_ID, ShopProductAttr.ATTR_TYPE_ID, ShopProductAttr.VALUE];
+
+  constructor() {
+    super(ShopProductAttr._TABLE_NAME, undefined, ShopProductAttr._FIELDS);
+  }
+}
+
+export class ShopProductAttrCategory extends TableImpl {
+  private static readonly _TABLE_NAME = 'shop_product_attr_category';
+  static readonly ID: Field<number> = new FieldImpl<number>(ShopProductAttrCategory._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
+  static readonly NAME: Field<string> = new FieldImpl<string>(ShopProductAttrCategory._TABLE_NAME, 2, 'name', undefined, 'character varying', false, false);
+  private static readonly _FIELDS: Field<any>[] = [ShopProductAttrCategory.ID, ShopProductAttrCategory.NAME];
+
+  constructor() {
+    super(ShopProductAttrCategory._TABLE_NAME, undefined, ShopProductAttrCategory._FIELDS);
+  }
+}
+
+export class ShopProductAttrType extends TableImpl {
+  private static readonly _TABLE_NAME = 'shop_product_attr_type';
+  static readonly ID: Field<number> = new FieldImpl<number>(ShopProductAttrType._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
+  static readonly NAME: Field<string> = new FieldImpl<string>(ShopProductAttrType._TABLE_NAME, 2, 'name', undefined, 'character varying', false, false);
+  static readonly ATTR_CATEGORY_ID: Field<number> = new FieldImpl<number>(ShopProductAttrType._TABLE_NAME, 3, 'attr_category_id', undefined, 'integer', false, false);
+  private static readonly _FIELDS: Field<any>[] = [ShopProductAttrType.ID, ShopProductAttrType.NAME, ShopProductAttrType.ATTR_CATEGORY_ID];
+
+  constructor() {
+    super(ShopProductAttrType._TABLE_NAME, undefined, ShopProductAttrType._FIELDS);
+  }
+}
+
 export class ShopUser extends TableImpl {
   private static readonly _TABLE_NAME = 'shop_user';
   static readonly ID: Field<number> = new FieldImpl<number>(ShopUser._TABLE_NAME, 1, 'id', undefined, 'integer', false, true);
@@ -161,6 +197,9 @@ export class Tables {
   static readonly SHOP_ORDER: Table = new ShopOrder();
   static readonly SHOP_ORDER_ITEM: Table = new ShopOrderItem();
   static readonly SHOP_PRODUCT: Table = new ShopProduct();
+  static readonly SHOP_PRODUCT_ATTR: Table = new ShopProductAttr();
+  static readonly SHOP_PRODUCT_ATTR_CATEGORY: Table = new ShopProductAttrCategory();
+  static readonly SHOP_PRODUCT_ATTR_TYPE: Table = new ShopProductAttrType();
   static readonly SHOP_USER: Table = new ShopUser();
   static readonly SHOP_VAT_GROUP: Table = new ShopVatGroup();
 }

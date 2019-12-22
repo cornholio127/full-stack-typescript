@@ -11,17 +11,31 @@ interface Image {
   isMain: boolean;
 }
 
+interface Attribute {
+  typeId: number;
+  value: string;
+}
+
 interface Product {
   categoryId: string;
   name: string;
   description: string;
   price: string;
   images: Image[];
+  specification: Attribute[];
 }
 
 const random = (max: number): number => {
   return Math.floor(Math.random() * Math.floor(max));
 }
+
+const randomAdjective = (): string => {
+  return adjectives[random(adjectives.length)];
+};
+
+const randomNoun = (): string => {
+  return nouns[random(nouns.length)];
+};
 
 const capital = (s: string): string => s.substring(0, 1).toUpperCase() + s.toLowerCase().substring(1);
 
@@ -30,7 +44,7 @@ const generateCategoryId = (): string => {
 };
 
 const generateName = (): string => {
-  return `${capital(adjectives[random(adjectives.length)])} ${capital(adjectives[random(adjectives.length)])} ${capital(nouns[random(nouns.length)])}`;
+  return `${capital(randomAdjective())} ${capital(randomAdjective())} ${capital(randomNoun())}`;
 };
 
 const generateAndJoin = (generator: () => string, min: number, max: number, joinBy: string): string => {
@@ -64,6 +78,73 @@ const generateImageUrl = (): string => {
   return `https://picsum.photos/id/${random(1084) + 1}/600/400`;
 };
 
+const generateManufacturer = (): string => {
+  return `${capital(randomNoun())}${randomNoun()}`;
+};
+
+const generateProductType = (): string => {
+  return `${capital(randomAdjective())} ${randomNoun()}`;
+};
+
+const generateArticleNumber = (): string => {
+  return `${random(900) + 100}.${random(900) + 100}.${random(900) + 100}`;
+};
+
+const COLORS = ['white', 'gray', 'black', 'yellow', 'red', 'green', 'blue', 'purple', 'orange', 'brown', 'silver', 'gold', 'pink'];
+
+const randomColor = (): string => {
+  return COLORS[random(COLORS.length)];
+};
+
+const randomLength = (): string => {
+  return `${random(150)}.${random(10)} cm`;
+};
+
+const randomWeight = (): string => {
+  return `${random(60)}.${random(10)} kg`;
+};
+
+const generateSpecification = (): Attribute[] => {
+  return [
+    {
+      typeId: 1,
+      value: generateManufacturer(),
+    },
+    {
+      typeId: 2,
+      value: generateProductType(),
+    },
+    {
+      typeId: 3,
+      value: generateArticleNumber(),
+    },
+    {
+      typeId: 4,
+      value: randomColor(),
+    },
+    {
+      typeId: 5,
+      value: randomColor(),
+    },
+    {
+      typeId: 6,
+      value: randomLength(),
+    },
+    {
+      typeId: 7,
+      value: randomLength(),
+    },
+    {
+      typeId: 8,
+      value: randomLength(),
+    },
+    {
+      typeId: 9,
+      value: randomWeight(),
+    },
+  ];
+};
+
 const generateProduct = (): Product => {
   return {
     categoryId: generateCategoryId(),
@@ -80,6 +161,7 @@ const generateProduct = (): Product => {
       url: generateImageUrl(),
       isMain: false,
     }],
+    specification: generateSpecification(),
   };
 };
 
@@ -91,7 +173,7 @@ const insertProducts = async () => {
       query: 'mutation InsertProduct($p: InsertProductInput!) {insertProduct(product:$p)}',
       variables: { p },
     };
-    await axios.post('http://localhost:9002', data);
+    await axios.post('http://localhost:9002', data).catch(err => console.log(err.response.data));
   }
 };
 
