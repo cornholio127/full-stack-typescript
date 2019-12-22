@@ -3,6 +3,7 @@ import {
   GQLCategoryResolvers,
   GQLProduct,
   GQLMutationResolvers,
+  GQLImage,
 } from '../gen/gql/types';
 import { create } from '../db';
 import {
@@ -14,6 +15,10 @@ import {
 } from '../gen/db/public';
 import { DbFunctions, Record } from 'tsooq';
 import { PoolClient } from 'pg';
+import { groupBy, mapGroup } from './util';
+
+const categoryName = ShopCategory.NAME.as('category_name');
+const imageId = ShopImage.ID.as('image_id');
 
 const toGQLProduct = (row: Record): GQLProduct => ({
   id: '' + row.get(ShopProduct.ID),
@@ -22,14 +27,20 @@ const toGQLProduct = (row: Record): GQLProduct => ({
   activationDate: row.get(ShopProduct.ACTIVATION_DATE).toISOString(),
   category: {
     id: '' + row.get(ShopProduct.CATEGORY_ID),
-    name: row.get(ShopCategory.NAME),
+    name: row.get(categoryName),
     products: [],
   },
   price: {
     amount: '' + row.get(ShopProduct.PRICE),
-    vatPct: '',
+    vatPct: '' + row.get(ShopVatGroup.PERCENTAGE),
   },
   images: [],
+});
+
+const toGQLImage = (row: Record): GQLImage => ({
+  id: '' + row.get(imageId),
+  isMain: row.get(ShopImage.IS_MAIN),
+  url: row.get(ShopImage.URL),
 });
 
 export const productById = (id: string): Promise<GQLProduct> => {
@@ -71,16 +82,25 @@ export const categoryProducts: GQLCategoryResolvers['products'] = source => {
     });
 };
 
-export const searchProducts: GQLQueryResolvers['searchProducts'] = (
+export const searchProducts: GQLQueryResolvers['searchProducts'] = async (
   source,
   args
 ) => {
   const orderField = ShopProduct.ACTIVATION_DATE.desc();
-  return create
-    .select(...Tables.SHOP_PRODUCT.fields, ShopCategory.NAME)
+  const recs = await create
+    .select(
+      ...Tables.SHOP_PRODUCT.fields,
+      categoryName,
+      ShopVatGroup.PERCENTAGE,
+      imageId,
+      ShopImage.URL,
+      ShopImage.IS_MAIN
+    )
     .from(Tables.SHOP_PRODUCT)
     .join(Tables.SHOP_CATEGORY)
     .on(ShopProduct.CATEGORY_ID.eq(ShopCategory.ID))
+    .join(Tables.SHOP_VAT_GROUP)
+    .on(ShopProduct.VAT_GROUP_ID.eq(ShopVatGroup.ID))
     .join(Tables.SHOP_IMAGE)
     .on(ShopImage.PRODUCT_ID.eq(ShopProduct.ID))
     .where(
@@ -89,7 +109,13 @@ export const searchProducts: GQLQueryResolvers['searchProducts'] = (
       )
     )
     .orderBy(orderField)
-    .fetchMapped(toGQLProduct);
+    .fetch();
+  return mapGroup(
+    groupBy(recs, ShopProduct.ID),
+    toGQLProduct,
+    toGQLImage,
+    'images'
+  );
 };
 
 export const insertProduct: GQLMutationResolvers['insertProduct'] = async (

@@ -57,7 +57,7 @@ const generateDescription = (): string => {
 
 const generatePrice = (): string => {
   const cents = random(20) * 5;
-  return `${random(10000)}.${cents < 10 && '0'}${cents}`;
+  return `${random(10000)}.${cents < 10 ? '0' : ''}${cents}`;
 };
 
 const generateImageUrl = (): string => {
@@ -84,7 +84,7 @@ const generateProduct = (): Product => {
 };
 
 const insertProducts = async () => {
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 1000; i++) {
     const p = generateProduct();
     const data = {
       operationName: 'InsertProduct',
