@@ -50,8 +50,8 @@ const Sidebar: React.FC = () => {
       </Heading>
       <StyledList>
         {categories.map((c, i) => (
-          <li>
-            <SidebarItem key={i} label={c.name} />
+          <li key={i}>
+            <SidebarItem category={c} />
           </li>
         ))}
       </StyledList>

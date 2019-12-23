@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button, ButtonProps } from 'grommet';
-import Icon from '../icon';
+import Icon, { IconType } from '../icon';
 
 const IconWrapper = styled.div`
   width: 24px;
   height: 24px;
 `;
 
-const StyledButton = styled(Button)`
+const StyledSubmitButton = styled(Button)`
   width: 144px;
   height: 40px;
   border-radius: 12px;
@@ -30,9 +30,10 @@ const StyledButton = styled(Button)`
   }
 `;
 
-export const SubmitButton: React.FC<ButtonProps> = props => {
+export const SubmitButton: React.FC<ButtonProps &
+  JSX.IntrinsicElements['button']> = props => {
   return (
-    <StyledButton
+    <StyledSubmitButton
       {...props}
       icon={
         <IconWrapper>
@@ -40,6 +41,87 @@ export const SubmitButton: React.FC<ButtonProps> = props => {
         </IconWrapper>
       }
       reverse={true}
+    />
+  );
+};
+
+const StyledActionButton = styled(Button)`
+  min-width: 144px;
+  background: #123456;
+  color: #ffffff;
+  border: 0;
+  box-shadow: none;
+  font-weight: 400;
+  font-size: 16px;
+  border-radius: 4px;
+  border: 1px solid #123456;
+  &:hover {
+    box-shadow: none;
+    background: ${props => props.theme.global?.colors?.brand};
+    border-color: ${props => props.theme.global?.colors?.brand};
+  }
+  &:active {
+    border-color: #123456;
+  }
+`;
+
+const SmallIconWrapper = styled.div`
+  width: 16px;
+  height: 16px;
+  margin-top: -3px;
+`;
+
+export const ActionButton: React.FC<Omit<ButtonProps, 'icon'> & {
+  icon?: IconType;
+} & JSX.IntrinsicElements['button']> = props => {
+  return (
+    <StyledActionButton
+      {...props}
+      icon={
+        props.icon && (
+          <SmallIconWrapper>
+            <Icon type={props.icon} size="xsmall" />
+          </SmallIconWrapper>
+        )
+      }
+    />
+  );
+};
+
+const MiniIconWrapper = styled.div`
+  width: 16px;
+  height: 16px;
+`;
+
+const StyledMiniActionButton = styled(Button)`
+  padding: 0;
+  &:hover {
+    box-shadow: none;
+    color: ${props => props.theme.global?.colors?.brand};
+  }
+  &:active {
+    box-shadow: none;
+  }
+  &:focus {
+    box-shadow: none;
+  }
+`;
+
+export const MiniActionButton: React.FC<Omit<ButtonProps, 'icon'> & {
+  icon: IconType;
+} & JSX.IntrinsicElements['button']> = props => {
+  return (
+    <StyledMiniActionButton
+      {...props}
+      label=""
+      title={props.label}
+      icon={
+        props.icon && (
+          <MiniIconWrapper>
+            <Icon type={props.icon} size="xsmall" />
+          </MiniIconWrapper>
+        )
+      }
     />
   );
 };

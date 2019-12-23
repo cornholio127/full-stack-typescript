@@ -2,23 +2,19 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import Marker from './Marker';
 import { Box } from 'grommet';
+import { AllCategories_categories as Category } from './AllCategories';
+import { slug } from '../../util';
 
 interface Props {
-  label: string;
+  category: Category;
 }
 
-const slug = (s: string) =>
-  s
-    .toLowerCase()
-    .split(' ')
-    .join('-');
-
-const SidebarItem: React.FC<Props> = ({ label }) => {
-  const url = `/tag/${slug(label)}`;
+const SidebarItem: React.FC<Props> = ({ category }) => {
+  const url = `/tag/${slug(category.name, category.id)}`;
   return (
     <Box direction="row">
       <Marker url={url} />
-      <NavLink to={url}>{label}</NavLink>
+      <NavLink to={url}>{category.name}</NavLink>
     </Box>
   );
 };

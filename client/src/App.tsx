@@ -28,6 +28,12 @@ const theme = deepMerge(grommet, {
       },
     },
   },
+  paragraph: {
+    medium: {
+      size: '16px',
+      height: '22px',
+    },
+  },
 });
 
 const client = new ApolloClient({ uri: 'http://localhost:9000' });
@@ -40,10 +46,10 @@ const App: React.FC = () => {
           <Route path="/" exact={true}>
             <pages.Home />
           </Route>
-          <Route path="/tag/:slug" exact={true}>
+          <Route path="/tag/:slug">
             <pages.Category />
           </Route>
-          <Route path="/tag/:catslug/:prodslug">
+          <Route path="/product/:slug">
             <pages.Product />
           </Route>
           <Route path="/basket">

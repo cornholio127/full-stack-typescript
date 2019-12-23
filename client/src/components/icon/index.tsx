@@ -17,7 +17,7 @@ export type IconType =
   | 'target'
   | 'x';
 
-type Size = 'small' | 'medium' | 'large' | 'xlarge';
+type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
 
 const ICONS: { [index: string]: React.FC } = {
   'chevron-left': ChevronLeft,
@@ -30,6 +30,7 @@ const ICONS: { [index: string]: React.FC } = {
 };
 
 const SIZES: { [index: string]: string } = {
+  xsmall: '16px',
   small: '24px',
   medium: '32px',
   large: '48px',
