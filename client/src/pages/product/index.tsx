@@ -15,6 +15,7 @@ import DetailsRow from './DetailsRow';
 import Text from '../../components/text';
 import SpecificationGroup from './SpecificationGroup';
 import { ActionButton } from '../../components/button';
+import { useBasket } from '../../hooks';
 
 const productDetailsQuery = gql`
   query ProductDetails($id: ID!) {
@@ -37,6 +38,10 @@ const productDetailsQuery = gql`
           value
         }
       }
+      category {
+        id
+        name
+      }
     }
   }
 `;
@@ -57,6 +62,11 @@ const emptyProduct: ProductDetailsData = {
   },
   images: [],
   specification: [],
+  category: {
+    __typename: 'Category',
+    id: '',
+    name: '',
+  },
 };
 
 const Price = styled.div`
@@ -68,15 +78,19 @@ const Price = styled.div`
 const Product: React.FC = () => {
   const { slug } = useParams<RouteParams>();
   const productId = idFromSlug(slug);
-  const { data } = useQuery<ProductDetails, ProductDetailsVariables>(
+  const { data, client } = useQuery<ProductDetails, ProductDetailsVariables>(
     productDetailsQuery,
     {
       fetchPolicy: 'cache-and-network',
       variables: { id: productId },
     }
   );
+  if (data && data.productById) {
+    client.writeData({ data: { selectedCategory: data.productById.category } });
+  }
   const product: ProductDetailsData =
     (data && data.productById) || emptyProduct;
+  const [, updateBasket] = useBasket();
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
@@ -96,7 +110,11 @@ const Product: React.FC = () => {
         <Box direction="row" justify="between">
           <Price>CHF {product.price.amount}</Price>
           <Box justify="center">
-            <ActionButton label="Add to basket" icon="shopping-bag" />
+            <ActionButton
+              label="Add to basket"
+              icon="shopping-bag"
+              onClick={() => updateBasket(product.id, 1)}
+            />
           </Box>
         </Box>
         <DetailsRow label="Description">

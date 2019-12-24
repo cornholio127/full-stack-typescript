@@ -5,6 +5,8 @@ import { Heading } from 'grommet';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
 import { AllCategories } from './AllCategories';
+import { useRouteMatch } from 'react-router';
+import { idFromSlug } from '../../util';
 
 const StyledList = styled.ul`
   margin: 0;
@@ -39,9 +41,19 @@ const categoriesQuery = gql`
 `;
 
 const Sidebar: React.FC = () => {
-  const { data } = useQuery<AllCategories>(categoriesQuery, {
+  const { data, client } = useQuery<AllCategories>(categoriesQuery, {
     fetchPolicy: 'cache-first',
   });
+  const match = useRouteMatch<{ slug: string }>(`/tag/:slug`);
+  const categoryId = match?.params.slug && idFromSlug(match.params.slug);
+  if (data && data.categories) {
+    const result = data.categories.filter(c => c.id === categoryId);
+    if (result.length === 1) {
+      client.writeData({
+        data: { selectedCategory: result[0] },
+      });
+    }
+  }
   const categories = (data && data.categories) || [];
   return (
     <>

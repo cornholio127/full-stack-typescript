@@ -20,7 +20,7 @@
     "lint": "eslint --ext .ts,.tsx .",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "gen-gql": "npx apollo client:codegen . --target=typescript --includes=./src/**/*.tsx"
+    "gen-gql": "npx apollo client:codegen . --target=typescript --includes=./src/**/*.tsx,./src/**/*.ts"
   },
   "dependencies": {
     "@apollo/react-hooks": "3.1.3",

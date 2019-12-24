@@ -1,10 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import Icon from '../icon';
-import { useRouteMatch } from 'react-router';
 
 interface Props {
-  url: string;
+  visible: boolean;
 }
 
 const Container = styled.div`
@@ -13,13 +12,8 @@ const Container = styled.div`
   color: ${props => props.theme.global?.colors?.brand};
 `;
 
-const Marker: React.FC<Props> = ({ url }) => {
-  const match = useRouteMatch(url);
-  return (
-    <Container>
-      {match?.isExact ? <Icon type="chevron-right" /> : null}
-    </Container>
-  );
+const Marker: React.FC<Props> = ({ visible }) => {
+  return <Container>{visible && <Icon type="chevron-right" />}</Container>;
 };
 
 export default Marker;

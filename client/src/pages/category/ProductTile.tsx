@@ -5,6 +5,7 @@ import { SearchProducts_searchProducts as Product } from './SearchProducts';
 import { NavLink } from 'react-router-dom';
 import { slug } from '../../util';
 import { MiniActionButton } from '../../components/button';
+import { useBasket } from 'src/hooks';
 
 interface Props {
   product: Product;
@@ -44,6 +45,7 @@ const StyledLink = styled(NavLink)`
 `;
 
 const ProductTile: React.FC<Props> = ({ product }) => {
+  const [, updateBasket] = useBasket();
   const mainImage = product.images.filter(i => i.isMain === true)[0];
   return (
     <Tile>
@@ -54,7 +56,11 @@ const ProductTile: React.FC<Props> = ({ product }) => {
           <Box direction="row" justify="between">
             <Box>CHF {product.price.amount}</Box>
             <Actions>
-              <MiniActionButton icon="shopping-bag" label="Add to basket" />
+              <MiniActionButton
+                icon="shopping-bag"
+                label="Add to basket"
+                onClick={() => updateBasket(product.id, 1)}
+              />
             </Actions>
           </Box>
         </Box>

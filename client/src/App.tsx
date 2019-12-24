@@ -3,8 +3,14 @@ import * as pages from './pages';
 import { Grommet, grommet } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import ApolloClient from 'apollo-boost';
+import ApolloClient, { InMemoryCache, gql } from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
+import { basketQuery } from './hooks';
+import { ApolloCache } from 'apollo-cache';
+import {
+  BasketQuery,
+  BasketQuery_basket as BasketItem,
+} from './hooks/BasketQuery';
 
 const theme = deepMerge(grommet, {
   global: {
@@ -36,7 +42,51 @@ const theme = deepMerge(grommet, {
   },
 });
 
-const client = new ApolloClient({ uri: 'http://localhost:9000' });
+const client = new ApolloClient({
+  uri: 'http://localhost:9000',
+  cache: new InMemoryCache(),
+  typeDefs: gql`
+    type BasketItem {
+      productId: ID!
+      quantity: Int!
+    }
+    extend type Query {
+      selectedCategory: Category
+      basket: [BasketItem!]!
+    }
+    extend type Mutation {
+      updateBasket(productId: ID!, quantity: Int!): [BasketItem!]!
+    }
+  `,
+  resolvers: {
+    Mutation: {
+      updateBasket: (obj, args, { cache }) => {
+        const result = (cache as ApolloCache<object>).readQuery<BasketQuery>({
+          query: basketQuery,
+        });
+        const basket = result?.basket || [];
+        const filteredById = basket.filter(i => i.productId === args.productId);
+        if (filteredById.length === 0) {
+          filteredById.push({
+            __typename: 'BasketItem',
+            productId: args.productId,
+            quantity: 0,
+          });
+        }
+        filteredById[0].quantity += args.quantity;
+        const newBasket: BasketItem[] = basket
+          .filter(i => i.productId !== args.productId)
+          .concat(args.quantity === 0 ? [] : filteredById);
+        (cache as ApolloCache<object>).writeData({
+          data: { basket: newBasket },
+        });
+        return newBasket;
+      },
+    },
+  },
+});
+
+client.writeData({ data: { selectedCategory: null, basket: [] } });
 
 const App: React.FC = () => {
   return (

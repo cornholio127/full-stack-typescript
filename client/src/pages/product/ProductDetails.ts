@@ -30,6 +30,12 @@ export interface ProductDetails_productById_specification {
   attributes: ProductDetails_productById_specification_attributes[];
 }
 
+export interface ProductDetails_productById_category {
+  __typename: "Category";
+  id: string;
+  name: string;
+}
+
 export interface ProductDetails_productById {
   __typename: "Product";
   id: string;
@@ -38,6 +44,7 @@ export interface ProductDetails_productById {
   price: ProductDetails_productById_price;
   images: ProductDetails_productById_images[];
   specification: ProductDetails_productById_specification[];
+  category: ProductDetails_productById_category;
 }
 
 export interface ProductDetails {

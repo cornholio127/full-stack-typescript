@@ -7,6 +7,7 @@ import { Box, Heading } from 'grommet';
 import ProductTile from './ProductTile';
 import { useParams } from 'react-router';
 import { idFromSlug } from '../../util';
+import { useSelectedCategory } from '../../hooks';
 
 const searchProductsQuery = gql`
   query SearchProducts($categoryId: ID!) {
@@ -39,6 +40,8 @@ interface RouteParams {
 const Category: React.FC = () => {
   const { slug } = useParams<RouteParams>();
   const categoryId = idFromSlug(slug);
+  const selectedCategory = useSelectedCategory();
+  const categoryName = selectedCategory?.name || '';
   const { data, loading } = useQuery<SearchProducts, SearchProductsVariables>(
     searchProductsQuery,
     {
@@ -49,7 +52,7 @@ const Category: React.FC = () => {
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
-        <Heading level={2}>Category</Heading>
+        <Heading level={2}>{categoryName}</Heading>
         {loading && 'Loading...'}
         {data && (
           <Box>
