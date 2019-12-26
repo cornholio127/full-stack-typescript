@@ -5,7 +5,7 @@ import GlobalSearch from '../globalsearch';
 import Icon from '../icon';
 import { NavLink } from 'react-router-dom';
 import Link from '../link';
-import { useBasket } from '../../hooks';
+import BasketIcon from './BasketIcon';
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +34,6 @@ const LogoText = styled.span`
 `;
 
 const Header: React.FC = () => {
-  const [basket] = useBasket();
   return (
     <Container>
       <Box width="280px" direction="row">
@@ -57,8 +56,7 @@ const Header: React.FC = () => {
         <Link url="/login" icon="lock">
           Login
         </Link>
-        <Link url="/basket" icon="shopping-bag" />
-        {basket.length}
+        <BasketIcon />
       </Box>
     </Container>
   );

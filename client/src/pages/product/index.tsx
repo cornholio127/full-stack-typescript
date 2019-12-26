@@ -9,7 +9,7 @@ import {
   ProductDetails_productById as ProductDetailsData,
 } from './ProductDetails';
 import { useParams } from 'react-router';
-import { idFromSlug } from 'src/util';
+import { idFromSlug } from '../../util';
 import { Box, Heading, Carousel } from 'grommet';
 import DetailsRow from './DetailsRow';
 import Text from '../../components/text';

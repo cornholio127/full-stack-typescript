@@ -94,6 +94,7 @@ export type GQLProductAttributeCategory = {
 export type GQLQuery = {
    __typename?: 'Query',
   productById?: Maybe<GQLProduct>,
+  productsById: Array<GQLProduct>,
   searchProducts: Array<GQLProduct>,
   categories: Array<GQLCategory>,
   categoryById?: Maybe<GQLCategory>,
@@ -102,6 +103,11 @@ export type GQLQuery = {
 
 export type GQLQueryProductByIdArgs = {
   id: Scalars['ID']
+};
+
+
+export type GQLQueryProductsByIdArgs = {
+  ids: Array<Scalars['ID']>
 };
 
 
@@ -228,6 +234,7 @@ export type GQLResolversParentTypes = {
 
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   productById?: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductByIdArgs, 'id'>>,
+  productsById?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductsByIdArgs, 'ids'>>,
   searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId'>>,
   categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
   categoryById?: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQueryCategoryByIdArgs, 'id'>>,

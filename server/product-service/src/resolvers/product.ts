@@ -80,6 +80,25 @@ export const productByIdGql: GQLQueryResolvers['productById'] = (
   args
 ) => productById(args.id);
 
+export const productsById: GQLQueryResolvers['productsById'] = (
+  source,
+  args
+) => {
+  return create
+    .select(
+      ...Tables.SHOP_PRODUCT.fields,
+      categoryName,
+      ShopVatGroup.PERCENTAGE
+    )
+    .from(Tables.SHOP_PRODUCT)
+    .join(Tables.SHOP_CATEGORY)
+    .on(ShopProduct.CATEGORY_ID.eq(ShopCategory.ID))
+    .join(Tables.SHOP_VAT_GROUP)
+    .on(ShopProduct.VAT_GROUP_ID.eq(ShopVatGroup.ID))
+    .where(ShopProduct.ID.in(args.ids.map(id => Number(id))))
+    .fetchMapped(toGQLProduct);
+};
+
 export const categoryProducts: GQLCategoryResolvers['products'] = source => {
   const categoryId = Number(source.id);
   return create

@@ -8,6 +8,7 @@ import ProductTile from './ProductTile';
 import { useParams } from 'react-router';
 import { idFromSlug } from '../../util';
 import { useSelectedCategory } from '../../hooks';
+import { ActionButton } from '../../components/button';
 
 const searchProductsQuery = gql`
   query SearchProducts($categoryId: ID!) {
@@ -49,6 +50,9 @@ const Category: React.FC = () => {
       variables: { categoryId },
     }
   );
+  const loadMore = () => {
+    // TODO
+  };
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
@@ -63,6 +67,9 @@ const Category: React.FC = () => {
                 ))}
               </Box>
             ))}
+            <Box direction="row" justify="center">
+              <ActionButton label="Load more" onClick={loadMore} />
+            </Box>
           </Box>
         )}
       </Box>

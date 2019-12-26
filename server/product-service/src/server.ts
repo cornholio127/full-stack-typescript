@@ -26,6 +26,7 @@ const typeDefs = gql(
 const resolvers = {
   Query: {
     productById: productResolver.productByIdGql,
+    productsById: productResolver.productsById,
     searchProducts: productResolver.searchProducts,
     categories: categoryResolver.categories,
     categoryById: categoryResolver.categoryByIdGql,

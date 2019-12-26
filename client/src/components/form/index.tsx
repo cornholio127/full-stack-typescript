@@ -11,7 +11,7 @@ interface Props {
 }
 
 const StyledForm = styled.form`
-  width: 600px;
+  width: 720px;
   margin: 0 auto;
 `;
 

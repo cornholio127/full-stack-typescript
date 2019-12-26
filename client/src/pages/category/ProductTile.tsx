@@ -5,7 +5,7 @@ import { SearchProducts_searchProducts as Product } from './SearchProducts';
 import { NavLink } from 'react-router-dom';
 import { slug } from '../../util';
 import { MiniActionButton } from '../../components/button';
-import { useBasket } from 'src/hooks';
+import { useBasket } from '../../hooks';
 
 interface Props {
   product: Product;

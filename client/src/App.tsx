@@ -44,7 +44,9 @@ const theme = deepMerge(grommet, {
 
 const client = new ApolloClient({
   uri: 'http://localhost:9000',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    freezeResults: true,
+  }),
   typeDefs: gql`
     type BasketItem {
       productId: ID!
@@ -66,17 +68,16 @@ const client = new ApolloClient({
         });
         const basket = result?.basket || [];
         const filteredById = basket.filter(i => i.productId === args.productId);
-        if (filteredById.length === 0) {
-          filteredById.push({
-            __typename: 'BasketItem',
-            productId: args.productId,
-            quantity: 0,
-          });
-        }
-        filteredById[0].quantity += args.quantity;
+        const modifiedItem: BasketItem = {
+          __typename: 'BasketItem',
+          productId: args.productId,
+          quantity:
+            (filteredById.length > 0 ? filteredById[0].quantity : 0) +
+            args.quantity,
+        };
         const newBasket: BasketItem[] = basket
           .filter(i => i.productId !== args.productId)
-          .concat(args.quantity === 0 ? [] : filteredById);
+          .concat(args.quantity === 0 ? [] : modifiedItem);
         (cache as ApolloCache<object>).writeData({
           data: { basket: newBasket },
         });
@@ -104,6 +105,9 @@ const App: React.FC = () => {
           </Route>
           <Route path="/basket">
             <pages.Basket />
+          </Route>
+          <Route path="/checkout">
+            <pages.Checkout />
           </Route>
           <Route path="/login">
             <pages.Login />

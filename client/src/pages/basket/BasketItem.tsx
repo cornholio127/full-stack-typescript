@@ -1,16 +1,48 @@
 import React from 'react';
+import styled from 'styled-components';
 import { Box } from 'grommet';
+import { ProductsByIdQuery_productsById as Product } from './ProductsByIdQuery';
+import { MiniActionButton } from '../../components/button';
+import { NavLink } from 'react-router-dom';
+import { slug } from '../../util';
 
 interface Props {
-  product: { productId: string; quantity: number };
+  product: Product;
+  quantity: number;
+  onRemove: (productId: string) => void;
 }
 
-const BasketItem: React.FC<Props> = ({ product }) => {
+const Row = styled(Box)`
+  border-bottom: 1px solid #123456;
+  padding: 8px;
+`;
+
+const StyledLink = styled(NavLink)`
+  text-decoration: none;
+  color: #123456;
+  &:hover {
+    color: ${props => props.theme.global?.colors?.brand};
+  }
+`;
+
+const BasketItem: React.FC<Props> = ({ product, quantity, onRemove }) => {
   return (
-    <Box direction="row">
-      <Box basis="1/3">{product.productId}</Box>
-      <Box basis="2/3">{product.quantity}</Box>
-    </Box>
+    <Row direction="row">
+      <Box basis="50%">
+        <StyledLink to={`/product/${slug(product.name, product.id)}`}>
+          {product.name}
+        </StyledLink>
+      </Box>
+      <Box basis="20%" align="end">
+        {product.price.amount}
+      </Box>
+      <Box basis="20%" align="end">
+        {quantity}
+      </Box>
+      <Box basis="10%" direction="row" justify="end">
+        <MiniActionButton icon="x" onClick={() => onRemove(product.id)} />
+      </Box>
+    </Row>
   );
 };
 
