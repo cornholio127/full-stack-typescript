@@ -1,12 +1,31 @@
 import React from 'react';
-import { Box, Heading } from 'grommet';
+import { Box } from 'grommet';
 import Layout from '../../components/layout';
+import Process from '../../components/process';
+import AddressForm, { AddressValues } from './AddressForm';
+
+const INITIAL_ADDRESS_VALUES: AddressValues = {
+  firstName: '',
+  lastName: '',
+  companyName: '',
+  street: '',
+  zipCode: '',
+  city: '',
+};
 
 const Checkout: React.FC = () => {
+  const onNext = () => {
+    // TODO
+  };
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
-        <Heading level={2}>Checkout</Heading>
+        <Process steps={4} currentStep={1} />
+        <AddressForm
+          title="Checkout &mdash; Shipping address"
+          initialValues={INITIAL_ADDRESS_VALUES}
+          onSubmit={onNext}
+        />
       </Box>
     </Layout>
   );
