@@ -1,31 +1,40 @@
-import React from 'react';
-import { Box } from 'grommet';
+import React, { useState } from 'react';
+import { Box, Heading } from 'grommet';
 import Layout from '../../components/layout';
 import Process from '../../components/process';
-import AddressForm, { AddressValues } from './AddressForm';
-
-const INITIAL_ADDRESS_VALUES: AddressValues = {
-  firstName: '',
-  lastName: '',
-  companyName: '',
-  street: '',
-  zipCode: '',
-  city: '',
-};
+import Wizard from 'src/components/wizard';
+import ShippingAddress from './ShippingAddress';
+import BillingAddress from './BillingAddress';
+import PaymentMethod from './PaymentMethod';
+import Summary from './Summary';
 
 const Checkout: React.FC = () => {
-  const onNext = () => {
+  const [step, setStep] = useState(0);
+  const onSubmit = () => {
     // TODO
   };
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
-        <Process steps={4} currentStep={1} />
-        <AddressForm
-          title="Checkout &mdash; Shipping address"
-          initialValues={INITIAL_ADDRESS_VALUES}
-          onSubmit={onNext}
-        />
+        <Box direction="row" align="center">
+          <Box basis="1/3">
+            <Heading level={2}>Checkout</Heading>
+          </Box>
+          <Box basis="2/3">
+            <Process steps={4} currentStep={step + 1} />
+          </Box>
+        </Box>
+        <Wizard
+          step={step}
+          onPrev={() => setStep(step - 1)}
+          onNext={() => setStep(step + 1)}
+          onSubmit={onSubmit}
+        >
+          <ShippingAddress />
+          <BillingAddress />
+          <PaymentMethod />
+          <Summary />
+        </Wizard>
       </Box>
     </Layout>
   );

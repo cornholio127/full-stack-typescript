@@ -3,7 +3,7 @@ import Layout from '../../components/layout';
 import { TextInput } from '../../components/input';
 import Form, { Row } from '../../components/form';
 import { Formik } from 'formik';
-import { SubmitButton } from '../../components/button';
+import { FormButton } from '../../components/button';
 
 interface FormValues {
   email: string;
@@ -43,7 +43,11 @@ const Login: React.FC = () => {
               />
             </Row>
             <Row margin={true}>
-              <SubmitButton label="Submit" disabled={!formik.isValid} />
+              <FormButton
+                label="Submit"
+                icon="chevron-right"
+                disabled={!formik.isValid}
+              />
             </Row>
           </Form>
         )}

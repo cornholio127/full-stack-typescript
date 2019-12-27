@@ -8,7 +8,7 @@ const IconWrapper = styled.div`
   height: 24px;
 `;
 
-const StyledSubmitButton = styled(Button)`
+const StyledFormButton = styled(Button)`
   width: 144px;
   height: 40px;
   border-radius: 12px;
@@ -17,6 +17,7 @@ const StyledSubmitButton = styled(Button)`
   border: 1px solid #123456;
   font-weight: 600;
   line-height: 22px;
+  box-shadow: none;
   &:hover {
     ${props => !props.disabled && 'border: 2px solid #123456;'}
     box-shadow: none;
@@ -30,15 +31,20 @@ const StyledSubmitButton = styled(Button)`
   }
 `;
 
-export const SubmitButton: React.FC<ButtonProps &
-  JSX.IntrinsicElements['button']> = props => {
+type CustomButtonProps = Omit<ButtonProps, 'icon'> & {
+  icon?: IconType;
+} & JSX.IntrinsicElements['button'];
+
+export const FormButton: React.FC<CustomButtonProps> = props => {
   return (
-    <StyledSubmitButton
+    <StyledFormButton
       {...props}
       icon={
-        <IconWrapper>
-          <Icon type="chevron-right" />
-        </IconWrapper>
+        props.icon && (
+          <IconWrapper>
+            <Icon type={props.icon} />
+          </IconWrapper>
+        )
       }
       reverse={true}
     />
@@ -71,9 +77,7 @@ const SmallIconWrapper = styled.div`
   margin-top: -3px;
 `;
 
-export const ActionButton: React.FC<Omit<ButtonProps, 'icon'> & {
-  icon?: IconType;
-} & JSX.IntrinsicElements['button']> = props => {
+export const ActionButton: React.FC<CustomButtonProps> = props => {
   return (
     <StyledActionButton
       {...props}
@@ -107,9 +111,7 @@ const StyledMiniActionButton = styled(Button)`
   }
 `;
 
-export const MiniActionButton: React.FC<Omit<ButtonProps, 'icon'> & {
-  icon: IconType;
-} & JSX.IntrinsicElements['button']> = props => {
+export const MiniActionButton: React.FC<CustomButtonProps> = props => {
   return (
     <StyledMiniActionButton
       {...props}

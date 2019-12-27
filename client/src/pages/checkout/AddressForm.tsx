@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik } from 'formik';
 import Form, { Row } from '../../components/form';
 import { TextInput } from '../../components/input';
-import { SubmitButton } from '../../components/button';
 
 export interface AddressValues {
   firstName: string;
@@ -13,13 +12,21 @@ export interface AddressValues {
   city: string;
 }
 
+export const INITIAL_ADDRESS_VALUES: AddressValues = {
+  firstName: '',
+  lastName: '',
+  companyName: '',
+  street: '',
+  zipCode: '',
+  city: '',
+};
+
 interface Props {
-  title: string;
   initialValues: AddressValues;
   onSubmit: () => void;
 }
 
-const AddressForm: React.FC<Props> = ({ title, initialValues, onSubmit }) => {
+const AddressForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
   return (
     <Formik
       initialValues={initialValues}
@@ -27,7 +34,7 @@ const AddressForm: React.FC<Props> = ({ title, initialValues, onSubmit }) => {
       isInitialValid={false}
     >
       {formik => (
-        <Form title={title}>
+        <Form>
           <Row label="First name">
             <TextInput
               name="firstName"
@@ -75,9 +82,6 @@ const AddressForm: React.FC<Props> = ({ title, initialValues, onSubmit }) => {
               placeholder="City"
               onChange={formik.handleChange}
             />
-          </Row>
-          <Row margin={true}>
-            <SubmitButton label="Submit" disabled={!formik.isValid} />
           </Row>
         </Form>
       )}
