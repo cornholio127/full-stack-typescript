@@ -7,6 +7,8 @@ import Footer from './Footer';
 const PageContainer = styled.div`
   position: relative;
   min-height: 100vh;
+  padding-top: 104px;
+  box-sizing: border-box;
 `;
 
 const Container = styled.div`
@@ -27,10 +29,15 @@ const ContentContainer = styled(Container)`
   display: flex;
   flex-direction: row;
   padding-bottom: 240px;
+  min-height: 400px;
 `;
 
 const HeaderBackground = styled.div`
   background-color: #123456;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 1;
 `;
 
 const FooterBackground = styled.div`
@@ -48,8 +55,8 @@ const LeftColumn = styled.div`
   flex-shrink: 0;
   width: 264px;
   position: absolute;
-  min-height: 100px;
-  height: calc(100vh - 240px);
+  min-height: calc(100vh - 240px);
+  height: 100%;
   background: #eaeaed;
   padding: 16px;
   box-sizing: border-box;
@@ -65,24 +72,26 @@ const RightColumn = styled.div`
 
 const Layout: React.FC = ({ children }) => {
   return (
-    <PageContainer>
+    <>
       <HeaderBackground>
         <Container>
           <Header />
         </Container>
       </HeaderBackground>
-      <ContentContainer>
-        <LeftColumn>
-          <Sidebar />
-        </LeftColumn>
-        <RightColumn>{children}</RightColumn>
-      </ContentContainer>
-      <FooterBackground>
-        <Container>
-          <Footer />
-        </Container>
-      </FooterBackground>
-    </PageContainer>
+      <PageContainer>
+        <ContentContainer>
+          <LeftColumn>
+            <Sidebar />
+          </LeftColumn>
+          <RightColumn>{children}</RightColumn>
+        </ContentContainer>
+        <FooterBackground>
+          <Container>
+            <Footer />
+          </Container>
+        </FooterBackground>
+      </PageContainer>
+    </>
   );
 };
 
