@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Box } from 'grommet';
+import { Box, Menu } from 'grommet';
 import GlobalSearch from '../globalsearch';
 import Icon from '../icon';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import Link from '../link';
 import BasketIcon from './BasketIcon';
+import { useToken } from 'src/hooks';
 
 const Container = styled.div`
   display: flex;
@@ -33,7 +34,22 @@ const LogoText = styled.span`
   margin-top: -8px;
 `;
 
+const StyledMenu = styled(Menu)`
+  color: #c0c0c0;
+  &:hover {
+    color: #ffffff;
+  }
+`;
+
+const MenuItemLabel = styled.div`
+  align-self: center;
+  margin-left: 16px;
+`;
+
 const Header: React.FC = () => {
+  const history = useHistory();
+  const [token, setToken] = useToken();
+  const isLoggedIn = token && token.length > 0;
   return (
     <Container>
       <Box width="280px" direction="row">
@@ -53,9 +69,31 @@ const Header: React.FC = () => {
         justify="around"
         margin={{ left: '16px' }}
       >
-        <Link url="/login" icon="lock">
-          Login
-        </Link>
+        {isLoggedIn ? (
+          <StyledMenu
+            dropProps={{ align: { top: 'bottom', left: 'left' } }}
+            icon={<Icon type="user" />}
+            items={[
+              {
+                label: <MenuItemLabel>Order history</MenuItemLabel>,
+                icon: <Icon type="list" />,
+                onClick: () => history.push('/orders'),
+              },
+              {
+                label: <MenuItemLabel>Logout</MenuItemLabel>,
+                icon: <Icon type="log-out" />,
+                onClick: () => {
+                  setToken();
+                  history.push('/');
+                },
+              },
+            ]}
+          />
+        ) : (
+          <Link url="/login" icon="lock">
+            Login
+          </Link>
+        )}
         <BasketIcon />
       </Box>
     </Container>

@@ -7,9 +7,16 @@ import ShippingAddress from './ShippingAddress';
 import BillingAddress from './BillingAddress';
 import PaymentMethod from './PaymentMethod';
 import Summary from './Summary';
+import { useHistory } from 'react-router';
+import { useToken } from '../../hooks';
 
 const Checkout: React.FC = () => {
+  const history = useHistory();
+  const [token] = useToken();
   const [step, setStep] = useState(0);
+  if (!token) {
+    history.replace(`/login?r=${encodeURIComponent('/checkout')}`);
+  }
   const onSubmit = () => {
     // TODO
   };

@@ -58,9 +58,12 @@ export const useBasket = (): [
   ];
 };
 
-export const useToken = (): [string | undefined, (token: string) => void] => {
+export const useToken = (): [string | undefined, (token?: string) => void] => {
   return [
     window.localStorage.getItem('token') || undefined,
-    token => window.localStorage.setItem('token', token),
+    token =>
+      token
+        ? window.localStorage.setItem('token', token)
+        : window.localStorage.removeItem('token'),
   ];
 };

@@ -6,7 +6,7 @@ import Form, { Row } from '../../components/form';
 import { Formik, FormikHelpers } from 'formik';
 import { FormButton } from '../../components/button';
 import { Box } from 'grommet';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useHistory, useLocation } from 'react-router-dom';
 import { gql } from 'apollo-boost';
 import { useMutation } from '@apollo/react-hooks';
 import { LoginMutation, LoginMutationVariables } from './LoginMutation';
@@ -36,6 +36,7 @@ const INITIAL_VALUES: FormValues = { email: '', password: '' };
 const Login: React.FC = () => {
   const [, setToken] = useToken();
   const history = useHistory();
+  const location = useLocation();
   const [login, loginResult] = useMutation<
     LoginMutation,
     LoginMutationVariables
@@ -49,7 +50,13 @@ const Login: React.FC = () => {
         setSubmitting(false);
         if (result.data) {
           setToken(result.data?.login);
-          history.push('/');
+          const params = new URLSearchParams(location.search);
+          const r = params.get('r');
+          if (r) {
+            history.replace(r);
+          } else {
+            history.push('/');
+          }
         }
       })
       .catch(() => {
