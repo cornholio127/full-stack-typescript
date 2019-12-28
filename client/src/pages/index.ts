@@ -5,5 +5,6 @@ import Product from './product';
 import Cms from './cms';
 import Login from './login';
 import Checkout from './checkout';
+import Register from './register';
 
-export { Home, Basket, Category, Product, Cms, Login, Checkout };
+export { Home, Basket, Category, Product, Cms, Login, Checkout, Register };

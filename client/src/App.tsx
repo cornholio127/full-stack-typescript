@@ -112,6 +112,9 @@ const App: React.FC = () => {
           <Route path="/login">
             <pages.Login />
           </Route>
+          <Route path="/register">
+            <pages.Register />
+          </Route>
           <Route path="/cms">
             <pages.Cms />
           </Route>
