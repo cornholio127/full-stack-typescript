@@ -1,6 +1,6 @@
 import { ApolloServer, gql } from 'apollo-server';
 import { buildFederatedSchema } from '@apollo/federation';
-import { ContextFunction } from 'apollo-server-core';
+import { ContextFunction, AuthenticationError } from 'apollo-server-core';
 import fs from 'fs';
 import * as countryResolver from './resolvers/country';
 import * as userResolver from './resolvers/user';
@@ -81,6 +81,14 @@ const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
 const server = new ApolloServer({
   schema: buildFederatedSchema([{ typeDefs, resolvers }]),
   context: createContext,
+  engine: {
+    rewriteError: err => {
+      if (err instanceof AuthenticationError) {
+        return null;
+      }
+      return err;
+    },
+  },
 });
 
 server
