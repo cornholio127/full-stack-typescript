@@ -9,8 +9,9 @@ import { basketQuery } from './hooks';
 import { ApolloCache } from 'apollo-cache';
 import {
   BasketQuery,
-  BasketQuery_basket as BasketItem,
+  BasketQuery_basket_items as BasketItem,
 } from './hooks/BasketQuery';
+import BasketPersister from './BasketPersister';
 
 const theme = deepMerge(grommet, {
   global: {
@@ -52,9 +53,13 @@ const client = new ApolloClient({
       productId: ID!
       quantity: Int!
     }
+    type Basket {
+      modificationCount: Int!
+      items: [BasketItem!]!
+    }
     extend type Query {
       selectedCategory: Category
-      basket: [BasketItem!]!
+      basket: Basket!
     }
     extend type Mutation {
       updateBasket(productId: ID!, quantity: Int!): [BasketItem!]!
@@ -66,8 +71,8 @@ const client = new ApolloClient({
         const result = (cache as ApolloCache<object>).readQuery<BasketQuery>({
           query: basketQuery,
         });
-        const basket = result?.basket || [];
-        const filteredById = basket.filter(i => i.productId === args.productId);
+        const items = result?.basket.items || [];
+        const filteredById = items.filter(i => i.productId === args.productId);
         const modifiedItem: BasketItem = {
           __typename: 'BasketItem',
           productId: args.productId,
@@ -75,23 +80,39 @@ const client = new ApolloClient({
             (filteredById.length > 0 ? filteredById[0].quantity : 0) +
             args.quantity,
         };
-        const newBasket: BasketItem[] = basket
+        const newItems: BasketItem[] = items
           .filter(i => i.productId !== args.productId)
           .concat(args.quantity === 0 ? [] : modifiedItem);
         (cache as ApolloCache<object>).writeData({
-          data: { basket: newBasket },
+          data: {
+            basket: {
+              __typename: 'Basket',
+              modificationCount: (result?.basket.modificationCount || 0) + 1,
+              items: newItems,
+            },
+          },
         });
-        return newBasket;
+        return newItems;
       },
     },
   },
 });
 
-client.writeData({ data: { selectedCategory: null, basket: [] } });
+client.writeData({
+  data: {
+    selectedCategory: null,
+    basket: {
+      __typename: 'Basket',
+      modificationCount: 0,
+      items: [],
+    },
+  },
+});
 
 const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
+      <BasketPersister />
       <Router>
         <Grommet theme={theme}>
           <Route path="/" exact={true}>

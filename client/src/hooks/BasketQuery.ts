@@ -6,12 +6,18 @@
 // GraphQL query operation: BasketQuery
 // ====================================================
 
-export interface BasketQuery_basket {
+export interface BasketQuery_basket_items {
   __typename: "BasketItem";
   productId: string;
   quantity: number;
 }
 
+export interface BasketQuery_basket {
+  __typename: "Basket";
+  modificationCount: number;
+  items: BasketQuery_basket_items[];
+}
+
 export interface BasketQuery {
-  basket: BasketQuery_basket[];
+  basket: BasketQuery_basket;
 }

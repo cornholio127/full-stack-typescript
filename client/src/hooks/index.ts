@@ -1,7 +1,10 @@
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql, ExecutionResult } from 'apollo-boost';
 import { SelectedCategoryQuery } from './SelectedCategoryQuery';
-import { BasketQuery, BasketQuery_basket as BasketItem } from './BasketQuery';
+import {
+  BasketQuery,
+  BasketQuery_basket_items as BasketItem,
+} from './BasketQuery';
 import {
   UpdateBasketMutation,
   UpdateBasketMutationVariables,
@@ -24,8 +27,11 @@ export const useSelectedCategory = () => {
 export const basketQuery = gql`
   query BasketQuery {
     basket @client {
-      productId
-      quantity
+      modificationCount
+      items {
+        productId
+        quantity
+      }
     }
   }
 `;
@@ -44,7 +50,8 @@ export const useBasket = (): [
   (
     productId: string,
     quantity: number
-  ) => Promise<ExecutionResult<UpdateBasketMutation>>
+  ) => Promise<ExecutionResult<UpdateBasketMutation>>,
+  number
 ] => {
   const { data } = useQuery<BasketQuery>(basketQuery);
   const [mutate] = useMutation<
@@ -52,9 +59,10 @@ export const useBasket = (): [
     UpdateBasketMutationVariables
   >(updateBasketMutation);
   return [
-    data?.basket || [],
+    data?.basket.items || [],
     (productId: string, quantity: number) =>
       mutate({ variables: { productId, quantity } }),
+    data?.basket.modificationCount || 0,
   ];
 };
 
