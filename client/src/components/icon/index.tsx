@@ -12,11 +12,13 @@ import { ReactComponent as User } from './user.svg';
 import { ReactComponent as CreditCard } from './credit-card.svg';
 import { ReactComponent as List } from './list.svg';
 import { ReactComponent as LogOut } from './log-out.svg';
+import { ReactComponent as Image } from './image.svg';
 
 export type IconType =
   | 'chevron-left'
   | 'chevron-right'
   | 'credit-card'
+  | 'image'
   | 'list'
   | 'lock'
   | 'log-out'
@@ -27,12 +29,13 @@ export type IconType =
   | 'x'
   | 'x-circle';
 
-type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge';
+type Size = 'xsmall' | 'small' | 'medium' | 'large' | 'xlarge' | 'xxlarge';
 
 const ICONS: { [index: string]: React.FC } = {
   'chevron-left': ChevronLeft,
   'chevron-right': ChevronRight,
   'credit-card': CreditCard,
+  image: Image,
   list: List,
   lock: Lock,
   'log-out': LogOut,
@@ -50,6 +53,7 @@ const SIZES: { [index: string]: string } = {
   medium: '32px',
   large: '48px',
   xlarge: '64px',
+  xxlarge: '96px',
 };
 
 interface Props {

@@ -5,6 +5,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { SearchProducts, SearchProductsVariables } from './SearchProducts';
 import { Box, Heading } from 'grommet';
 import ProductTile from './ProductTile';
+import SkeletonTile from './SkeletonTile';
 import { useParams } from 'react-router';
 import { idFromSlug } from '../../util';
 import { useSelectedCategory } from '../../hooks';
@@ -57,21 +58,30 @@ const Category: React.FC = () => {
     <Layout>
       <Box width="720px" margin="0 auto">
         <Heading level={2}>{categoryName}</Heading>
-        {loading && 'Loading...'}
-        {data && (
-          <Box>
-            {rows(data.searchProducts.slice(0, 20), 3).map((row, i) => (
+        <Box>
+          {data && !loading ? (
+            <>
+              {rows(data.searchProducts.slice(0, 20), 3).map((row, i) => (
+                <Box key={i} direction="row" margin={{ bottom: '32px' }}>
+                  {row.map((p, j) => (
+                    <ProductTile key={j} product={p} />
+                  ))}
+                </Box>
+              ))}
+              <Box direction="row" justify="center">
+                <ActionButton label="Load more" onClick={loadMore} />
+              </Box>
+            </>
+          ) : (
+            rows([...Array(20).keys()], 3).map((row, i) => (
               <Box key={i} direction="row" margin={{ bottom: '32px' }}>
-                {row.map((p, j) => (
-                  <ProductTile key={j} product={p} />
+                {row.map((_, j) => (
+                  <SkeletonTile key={j} />
                 ))}
               </Box>
-            ))}
-            <Box direction="row" justify="center">
-              <ActionButton label="Load more" onClick={loadMore} />
-            </Box>
-          </Box>
-        )}
+            ))
+          )}
+        </Box>
       </Box>
     </Layout>
   );
