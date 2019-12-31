@@ -24,21 +24,21 @@
     "watch-node": "nodemon dist/server.js"
   },
   "dependencies": {
-    "@apollo/gateway": "0.11.4",
-    "apollo-server": "2.9.13",
+    "@apollo/gateway": "0.11.6",
+    "apollo-server": "2.9.15",
     "log4js": "6.1.0"
   },
   "devDependencies": {
-    "@types/node": "12.12.17",
-    "@typescript-eslint/eslint-plugin": "2.11.0",
-    "@typescript-eslint/parser": "2.11.0",
+    "@types/node": "13.1.2",
+    "@typescript-eslint/eslint-plugin": "2.14.0",
+    "@typescript-eslint/parser": "2.14.0",
     "concurrently": "5.0.1",
     "cross-env": "6.0.3",
-    "eslint": "6.7.2",
-    "eslint-config-prettier": "6.7.0",
-    "eslint-plugin-prettier": "3.1.1",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.9.0",
+    "eslint-plugin-prettier": "3.1.2",
     "nodemon": "2.0.1",
     "prettier": "1.19.1",
-    "typescript": "3.7.3"
+    "typescript": "3.7.4"
   }
 }

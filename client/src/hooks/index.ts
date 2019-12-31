@@ -9,6 +9,10 @@ import {
   UpdateBasketMutation,
   UpdateBasketMutationVariables,
 } from './UpdateBasketMutation';
+import {
+  CurrentUserQuery,
+  CurrentUserQuery_user as User,
+} from './CurrentUserQuery';
 
 const selectedCategoryQuery = gql`
   query SelectedCategoryQuery {
@@ -20,7 +24,9 @@ const selectedCategoryQuery = gql`
 `;
 
 export const useSelectedCategory = () => {
-  const { data } = useQuery<SelectedCategoryQuery>(selectedCategoryQuery);
+  const { data } = useQuery<SelectedCategoryQuery>(selectedCategoryQuery, {
+    fetchPolicy: 'cache-first',
+  });
   return data?.selectedCategory;
 };
 
@@ -74,4 +80,38 @@ export const useToken = (): [string | undefined, (token?: string) => void] => {
         ? window.localStorage.setItem('token', token)
         : window.localStorage.removeItem('token'),
   ];
+};
+
+const currentUserQuery = gql`
+  query CurrentUserQuery {
+    user {
+      id
+      email
+      billingAddress {
+        firstName
+        lastName
+        companyName
+        street
+        zipCode
+        city
+        country
+      }
+      shippingAddress {
+        firstName
+        lastName
+        companyName
+        street
+        zipCode
+        city
+        country
+      }
+    }
+  }
+`;
+
+export const useCurrentUser = (): [User | undefined, string | undefined] => {
+  const { data, error } = useQuery<CurrentUserQuery>(currentUserQuery, {
+    fetchPolicy: 'cache-first',
+  });
+  return [data?.user || undefined, error?.graphQLErrors[0].message];
 };

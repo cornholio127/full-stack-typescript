@@ -29,6 +29,19 @@ type OrderItem @key(fields: "id") {
   grossAmount: String!
 }
 
+type OrderSummary {
+  items: [OrderItem!]!
+  totalNetAmount: String!
+  totalVatAmount: String!
+  totalGrossAmount: String!
+}
+
+input ItemInput {
+  productId: ID!
+  quantity: Int!
+}
+
 type Query {
   orders: [Order!]!
+  orderSummary(items: [ItemInput!]!): OrderSummary!
 }

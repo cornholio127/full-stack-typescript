@@ -7,6 +7,7 @@ import { NavLink, useHistory } from 'react-router-dom';
 import Link from '../link';
 import BasketIcon from './BasketIcon';
 import { useToken } from 'src/hooks';
+import { useApolloClient } from '@apollo/react-hooks';
 
 const Container = styled.div`
   display: flex;
@@ -50,6 +51,12 @@ const Header: React.FC = () => {
   const history = useHistory();
   const [token, setToken] = useToken();
   const isLoggedIn = token && token.length > 0;
+  const client = useApolloClient();
+  const logout = () => {
+    setToken();
+    client.cache.reset();
+    window.location.href = '/';
+  };
   return (
     <Container>
       <Box width="280px" direction="row">
@@ -82,10 +89,7 @@ const Header: React.FC = () => {
               {
                 label: <MenuItemLabel>Logout</MenuItemLabel>,
                 icon: <Icon type="log-out" />,
-                onClick: () => {
-                  setToken();
-                  history.push('/');
-                },
+                onClick: logout,
               },
             ]}
           />

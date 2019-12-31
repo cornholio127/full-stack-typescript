@@ -28,10 +28,10 @@
   },
   "dependencies": {
     "@apollo/federation": "0.11.2",
-    "apollo-server": "2.9.14",
+    "apollo-server": "2.9.15",
     "graphql": "14.5.8",
     "log4js": "6.1.0",
-    "pg": "7.14.0",
+    "pg": "7.17.0",
     "tsooq": "0.1.16"
   },
   "devDependencies": {
@@ -40,27 +40,26 @@
     "@graphql-codegen/typescript-resolvers": "1.9.1",
     "@types/chai": "4.2.7",
     "@types/mocha": "5.2.7",
-    "@types/node": "12.12.19",
+    "@types/node": "13.1.2",
     "@types/node-fetch": "2.5.4",
-    "@types/pg": "7.11.2",
+    "@types/pg": "7.14.0",
     "@types/shelljs": "0.8.6",
     "@types/sinon": "7.5.1",
-    "@typescript-eslint/eslint-plugin": "2.12.0",
-    "@typescript-eslint/parser": "2.12.0",
+    "@typescript-eslint/eslint-plugin": "2.14.0",
+    "@typescript-eslint/parser": "2.14.0",
     "chai": "4.2.0",
     "concurrently": "5.0.1",
     "cross-env": "6.0.3",
-    "eslint": "6.7.2",
-    "eslint-config-prettier": "6.7.0",
+    "eslint": "6.8.0",
+    "eslint-config-prettier": "6.9.0",
     "eslint-plugin-prettier": "3.1.2",
     "mocha": "6.2.2",
     "nodemon": "2.0.2",
     "prettier": "1.19.1",
     "shelljs": "0.8.3",
     "sinon": "7.5.0",
-    "supertest": "4.0.2",
     "ts-node": "8.5.4",
     "tsooq-gen": "0.1.5",
-    "typescript": "3.7.3"
+    "typescript": "3.7.4"
   }
 }

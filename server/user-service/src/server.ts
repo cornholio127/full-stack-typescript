@@ -64,7 +64,7 @@ interface ContextArg {
 }
 
 const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
-  const auth = (req && req.headers.authentication) || '';
+  const auth = (req && req.headers.authorization) || '';
   const token = typeof auth === 'string' ? auth : auth[0];
   if (token.startsWith('Bearer ')) {
     const decoded = verifyAuthToken(token.substring('Bearer '.length));

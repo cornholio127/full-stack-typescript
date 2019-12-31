@@ -4,6 +4,7 @@ import fs from 'fs';
 import { configure, getLogger } from 'log4js';
 import * as orderResolver from './resolvers/order';
 import * as orderItemResolver from './resolvers/orderitem';
+import * as orderSummaryResolver from './resolvers/ordersummary';
 import { GQLOrder, GQLOrderItem } from './gen/gql/types';
 import env from './env';
 
@@ -24,6 +25,7 @@ const typeDefs = gql(
 const resolvers = {
   Query: {
     orders: orderResolver.orders,
+    orderSummary: orderSummaryResolver.orderSummary,
   },
   Order: {
     __resolveReference: (order: GQLOrder) => {

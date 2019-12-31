@@ -33,7 +33,6 @@ input InsertUserInput {
 }
 
 input UpdateUserInput {
-  id: ID!
   billingAddress: AddressInput
   shippingAddress: AddressInput
 }

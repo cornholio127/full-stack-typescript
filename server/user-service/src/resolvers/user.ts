@@ -12,6 +12,15 @@ import { PoolClient } from 'pg';
 import { constantResult, select, Record } from 'tsooq';
 import { getLogger } from 'log4js';
 import { AuthContext } from '../types';
+import { AuthenticationError } from 'apollo-server';
+
+const checkValidUser = (ctx: unknown) => {
+  const authContext = ctx as AuthContext;
+  if (authContext.userId === undefined) {
+    throw new AuthenticationError('Valid user required');
+  }
+  return authContext.userId;
+};
 
 const addressRef = (id?: number): GQLAddress | undefined =>
   id === undefined ? undefined : ({ id: '' + id } as GQLAddress);
@@ -32,14 +41,11 @@ export const userById = (id: string): Promise<GQLUser> => {
 };
 
 export const user: GQLQueryResolvers['user'] = (source, args, context) => {
-  const authContext = context as AuthContext;
-  if (authContext.userId === undefined) {
-    return null;
-  }
+  const userId = checkValidUser(context);
   return create
     .select()
     .from(Tables.SHOP_USER)
-    .where(ShopUser.ID.eq(authContext.userId))
+    .where(ShopUser.ID.eq(userId))
     .fetchSingleMapped(toGQLUser);
 };
 
@@ -116,10 +122,11 @@ const upsertAddress = async (address: GQLAddressInput, client: PoolClient) => {
 
 export const updateUser: GQLMutationResolvers['updateUser'] = async (
   source,
-  args
+  args,
+  context
 ) => {
   const { user } = args;
-  const userId = Number(user.id);
+  const userId = checkValidUser(context);
   const runnable = async (client: PoolClient) => {
     if (user.billingAddress) {
       const billingAddressId = await upsertAddress(user.billingAddress, client);

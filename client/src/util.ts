@@ -19,3 +19,16 @@ export const intToCurrency = (n: number): string => {
   const cts = n % 100;
   return `${Math.floor(n / 100)}.${cts < 10 ? '0' : ''}${cts}`;
 };
+
+export const isEmpty = (value?: unknown): boolean => {
+  if (value === undefined || value === null) {
+    return true;
+  }
+  if (typeof value === 'object') {
+    return Object.keys(value as object).length === 0;
+  }
+  if (typeof value === 'string') {
+    return (value as string).trim().length === 0;
+  }
+  return false;
+};

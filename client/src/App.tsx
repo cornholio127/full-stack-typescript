@@ -3,7 +3,7 @@ import * as pages from './pages';
 import { Grommet, grommet } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import ApolloClient, { InMemoryCache, gql } from 'apollo-boost';
+import ApolloClient, { InMemoryCache, gql, Operation } from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
 import { basketQuery } from './hooks';
 import { ApolloCache } from 'apollo-cache';
@@ -12,6 +12,8 @@ import {
   BasketQuery_basket_items as BasketItem,
 } from './hooks/BasketQuery';
 import BasketPersister from './BasketPersister';
+import TokenChecker from './TokenChecker';
+import { css } from 'styled-components';
 
 const theme = deepMerge(grommet, {
   global: {
@@ -41,10 +43,50 @@ const theme = deepMerge(grommet, {
       height: '22px',
     },
   },
+  radioButton: {
+    extend: css`
+      div {
+        box-shadow: none;
+        outline: none;
+      }
+      span {
+        font-weight: 500;
+      }
+    `,
+    hover: {
+      border: {
+        color: '#123456',
+      },
+    },
+  },
+  checkBox: {
+    extend: css`
+      div {
+        box-shadow: none;
+        outline: none;
+      }
+      span {
+        font-weight: 500;
+      }
+    `,
+    hover: {
+      border: {
+        color: '#123456',
+      },
+    },
+  },
 });
 
 const client = new ApolloClient({
   uri: 'http://localhost:9000',
+  request: (operation: Operation) => {
+    const token = window.localStorage.getItem('token');
+    operation.setContext({
+      headers: {
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+    });
+  },
   cache: new InMemoryCache({
     freezeResults: true,
   }),
@@ -112,6 +154,7 @@ client.writeData({
 const App: React.FC = () => {
   return (
     <ApolloProvider client={client}>
+      <TokenChecker />
       <BasketPersister />
       <Router>
         <Grommet theme={theme}>

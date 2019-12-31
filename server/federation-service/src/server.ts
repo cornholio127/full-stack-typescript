@@ -17,8 +17,8 @@ configure({
 class CustomRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   willSendRequest({ request, context }: any) {
-    if (context.authentication) {
-      request.http.headers.set('Authentication', context.authentication);
+    if (context.authorization) {
+      request.http.headers.set('Authorization', context.authorization);
     }
   }
 }
@@ -46,9 +46,9 @@ const gateway = new ApolloGateway({
 const server = new ApolloServer({
   gateway,
   context: ({ req }) => {
-    return req.headers.authentication
-      ? { authentication: req.headers.authentication }
-      : { asdf: 'foo' };
+    return req.headers.authorization
+      ? { authorization: req.headers.authorization }
+      : {};
   },
   subscriptions: false,
   introspection: true,

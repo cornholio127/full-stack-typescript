@@ -96,7 +96,6 @@ export type GQLQuery = {
 };
 
 export type GQLUpdateUserInput = {
-  id: Scalars['ID'],
   billingAddress?: Maybe<GQLAddressInput>,
   shippingAddress?: Maybe<GQLAddressInput>,
 };

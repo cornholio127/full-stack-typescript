@@ -41,5 +41,9 @@ export const createAuthToken = (userId: number): string => {
 };
 
 export const verifyAuthToken = (token: string): JwtPayload | string => {
-  return jwt.verify(token, JWT_SECRET) as JwtPayload | string;
+  try {
+    return jwt.verify(token, JWT_SECRET) as JwtPayload;
+  } catch (err) {
+    return err;
+  }
 };

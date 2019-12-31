@@ -3,7 +3,7 @@ import { Box } from 'grommet';
 import Label from './Label';
 
 interface Props {
-  label?: string;
+  label?: string | JSX.Element;
   margin?: boolean;
 }
 

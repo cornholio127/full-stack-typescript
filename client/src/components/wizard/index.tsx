@@ -1,25 +1,34 @@
 import React from 'react';
 import { Box } from 'grommet';
 import { FormButton } from '../button';
+import { useFormikContext } from 'formik';
+import Errors from '../error/Errors';
+import { Row } from '../form';
+import { ApolloError } from 'apollo-boost';
 
 interface Props {
+  height?: number;
   step: number;
   onPrev: () => void;
-  onNext: () => void;
-  onSubmit: () => void;
+  error?: ApolloError;
 }
 
-const Wizard: React.FC<Props> = ({
-  children,
-  step,
-  onPrev,
-  onNext,
-  onSubmit,
-}) => {
+const Wizard: React.FC<Props> = ({ children, step, onPrev, error, height }) => {
   const arr = React.Children.toArray(children);
+  const formik = useFormikContext();
+  const submit = () => {
+    formik.submitForm();
+  };
   return (
     <Box margin={{ top: '16px', bottom: '16px' }}>
-      {arr[step]}
+      <Box height={height ? height + 'px' : ''}>
+        {arr[step]}
+        {error && (
+          <Row>
+            <Errors gql={error} />
+          </Row>
+        )}
+      </Box>
       <Box
         direction="row"
         justify="between"
@@ -36,14 +45,14 @@ const Wizard: React.FC<Props> = ({
             label="Next"
             icon="chevron-right"
             reverse={true}
-            onClick={onNext}
+            onClick={submit}
           />
         ) : (
           <FormButton
             label="Submit"
             icon="chevron-right"
             reverse={true}
-            onClick={onSubmit}
+            onClick={submit}
           />
         )}
       </Box>
