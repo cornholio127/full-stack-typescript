@@ -21,6 +21,16 @@ export type GQLItemInput = {
   quantity: Scalars['Int'],
 };
 
+export type GQLMutation = {
+   __typename?: 'Mutation',
+  createOrder: Scalars['Boolean'],
+};
+
+
+export type GQLMutationCreateOrderArgs = {
+  items: Array<GQLItemInput>
+};
+
 export type GQLOrder = {
    __typename?: 'Order',
   id: Scalars['ID'],
@@ -160,6 +170,7 @@ export type GQLResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>,
   ItemInput: GQLItemInput,
   OrderSummary: ResolverTypeWrapper<GQLOrderSummary>,
+  Mutation: ResolverTypeWrapper<{}>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
 };
 
@@ -175,6 +186,7 @@ export type GQLResolversParentTypes = {
   Int: Scalars['Int'],
   ItemInput: GQLItemInput,
   OrderSummary: GQLOrderSummary,
+  Mutation: {},
   Boolean: Scalars['Boolean'],
 };
 
@@ -217,12 +229,17 @@ export type GQLOrderSummaryResolvers<ContextType = any, ParentType extends GQLRe
   totalGrossAmount?: Resolver<GQLResolversTypes['String'], ParentType, ContextType>,
 };
 
+export type GQLMutationResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Mutation'] = GQLResolversParentTypes['Mutation']> = {
+  createOrder?: Resolver<GQLResolversTypes['Boolean'], ParentType, ContextType, RequireFields<GQLMutationCreateOrderArgs, 'items'>>,
+};
+
 export type GQLResolvers<ContextType = any> = {
   Query?: GQLQueryResolvers<ContextType>,
   Order?: GQLOrderResolvers<ContextType>,
   OrderItem?: GQLOrderItemResolvers<ContextType>,
   Product?: GQLProductResolvers<ContextType>,
   OrderSummary?: GQLOrderSummaryResolvers<ContextType>,
+  Mutation?: GQLMutationResolvers<ContextType>,
 };
 
 

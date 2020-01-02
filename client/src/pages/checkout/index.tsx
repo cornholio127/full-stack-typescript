@@ -6,7 +6,7 @@ import Wizard from 'src/components/wizard';
 import ShippingAddress from './ShippingAddress';
 import BillingAddress from './BillingAddress';
 import PaymentMethod, { validatePaymentMethod } from './PaymentMethod';
-import Summary from './Summary';
+import Summary, { validateSummary } from './Summary';
 import { useHistory } from 'react-router';
 import { useCurrentUser, useBasket } from '../../hooks';
 import {
@@ -32,6 +32,11 @@ import {
   OrderSummaryQueryVariables,
   OrderSummaryQuery_orderSummary as OrderSummary,
 } from './OrderSummaryQuery';
+import {
+  CreateOrderMutation,
+  CreateOrderMutationVariables,
+} from './CreateOrderMutation';
+import OrderSuccess from './OrderSuccess';
 
 const toAddressValues = (
   addr: UserBillingAddress | UserShippingAddress | null | undefined
@@ -72,6 +77,12 @@ const orderSummaryQuery = gql`
   }
 `;
 
+const createOrderMutation = gql`
+  mutation CreateOrderMutation($items: [ItemInput!]!) {
+    createOrder(items: $items)
+  }
+`;
+
 const Checkout: React.FC = () => {
   const client = useApolloClient();
   const history = useHistory();
@@ -80,6 +91,7 @@ const Checkout: React.FC = () => {
   const [user, error] = useCurrentUser();
   const [basket] = useBasket();
   const [orderSummary, setOrderSummary] = useState<OrderSummary>();
+  const [orderSuccess, setOrderSuccess] = useState(false);
   useEffect(() => {
     if (error) {
       history.replace(`/login?r=${encodeURIComponent('/checkout')}`);
@@ -101,6 +113,9 @@ const Checkout: React.FC = () => {
     case 2:
       validate = validatePaymentMethod;
       break;
+    case 3:
+      validate = validateSummary;
+      break;
   }
   const [updateUser] = useMutation<
     UpdateUserMutation,
@@ -112,6 +127,7 @@ const Checkout: React.FC = () => {
   ) => {
     updateUser({
       variables: { user },
+      refetchQueries: ['CurrentUserQuery'],
     })
       .then(result => {
         if (result.data && result.data.updateUser === true) {
@@ -123,6 +139,10 @@ const Checkout: React.FC = () => {
       .catch(setSubmissionError)
       .finally(() => helpers.setSubmitting(false));
   };
+  const [createOrder] = useMutation<
+    CreateOrderMutation,
+    CreateOrderMutationVariables
+  >(createOrderMutation);
   const onSubmit = (
     values: FormikValues,
     helpers: FormikHelpers<FormikValues>
@@ -153,39 +173,70 @@ const Checkout: React.FC = () => {
           .then(result => setOrderSummary(result.data.orderSummary))
           .catch(console.log);
         break;
+      case 3:
+        createOrder({
+          variables: {
+            items: basket.map(item => ({
+              productId: item.productId,
+              quantity: item.quantity,
+            })),
+          },
+          refetchQueries: ['OrdersQuery'],
+        })
+          .then(() => {
+            setOrderSuccess(true);
+            client.writeData({
+              data: {
+                basket: {
+                  __typename: 'Basket',
+                  modificationCount: 1,
+                  items: [],
+                },
+              },
+            });
+          })
+          .catch(setSubmissionError)
+          .finally(() => helpers.setSubmitting(false));
+        break;
     }
   };
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
-        <Box direction="row" align="center">
-          <Box basis="1/3">
-            <Heading level={2}>Checkout</Heading>
-          </Box>
-          <Box basis="2/3">
-            <Process steps={4} currentStep={step + 1} />
-          </Box>
-        </Box>
-        <Formik
-          initialValues={initialValues}
-          enableReinitialize={true}
-          onSubmit={onSubmit}
-          isInitialValid={false}
-          validate={validate}
-          validateOnChange={false}
-        >
-          <Wizard
-            step={step}
-            onPrev={() => setStep(step => step - 1)}
-            error={submissionError}
-            height={440}
-          >
-            <ShippingAddress />
-            <BillingAddress />
-            <PaymentMethod />
-            <Summary data={orderSummary} />
-          </Wizard>
-        </Formik>
+        {orderSuccess ? (
+          <OrderSuccess />
+        ) : (
+          <>
+            <Box direction="row" align="center">
+              <Box basis="1/3">
+                <Heading level={2}>Checkout</Heading>
+              </Box>
+              <Box basis="2/3">
+                <Process steps={4} currentStep={step + 1} />
+              </Box>
+            </Box>
+            <Formik
+              initialValues={initialValues}
+              enableReinitialize={true}
+              onSubmit={onSubmit}
+              isInitialValid={false}
+              validate={validate}
+              validateOnChange={false}
+            >
+              <Wizard
+                step={step}
+                onPrev={() => setStep(step => step - 1)}
+                error={submissionError}
+                height={440}
+              >
+                <ShippingAddress />
+                <BillingAddress />
+                <PaymentMethod />
+                <Summary data={orderSummary} />
+              </Wizard>
+            </Formik>
+          </>
+        )}
       </Box>
     </Layout>
   );

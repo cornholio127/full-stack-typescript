@@ -30,5 +30,8 @@ export const isEmpty = (value?: unknown): boolean => {
   if (typeof value === 'string') {
     return (value as string).trim().length === 0;
   }
+  if (typeof value === 'boolean') {
+    return value === false;
+  }
   return false;
 };

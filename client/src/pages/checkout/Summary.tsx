@@ -4,6 +4,7 @@ import { OrderSummaryQuery_orderSummary as OrderSummary } from './OrderSummaryQu
 import CheckoutItem from './CheckoutItem';
 import styled from 'styled-components';
 import { useFormikContext } from 'formik';
+import { validate, notEmpty } from '../../validation';
 
 interface Props {
   data?: OrderSummary;
@@ -28,6 +29,16 @@ const TermsRow = styled.div`
   margin-top: 40px;
 `;
 
+const StyledError = styled.div`
+  color: #e80000;
+  font-size: 13px;
+  font-weight: 500;
+`;
+
+export const validateSummary = validate([
+  notEmpty<SummaryValues>('acceptTerms'),
+]);
+
 const Summary: React.FC<Props> = ({ data }) => {
   const formik = useFormikContext<SummaryValues>();
   return (
@@ -42,8 +53,8 @@ const Summary: React.FC<Props> = ({ data }) => {
               Price in CHF
             </Box>
           </HeaderRow>
-          {data.items.map(item => (
-            <CheckoutItem item={item} />
+          {data.items.map((item, i) => (
+            <CheckoutItem key={i} item={item} />
           ))}
           <FooterRow direction="row">
             <Box basis="70%">Total</Box>
@@ -60,6 +71,11 @@ const Summary: React.FC<Props> = ({ data }) => {
           onChange={formik.handleChange}
           label="I accept the terms and conditions."
         />
+        {formik.errors.acceptTerms && (
+          <StyledError>
+            {((formik.errors.acceptTerms as unknown) as string[])[0]}
+          </StyledError>
+        )}
       </TermsRow>
     </Box>
   );

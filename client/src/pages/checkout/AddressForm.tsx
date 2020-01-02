@@ -27,6 +27,9 @@ export const INITIAL_ADDRESS_VALUES: AddressValues = {
 export const validateAddress = validate([
   notEmpty<AddressValues>('firstName'),
   notEmpty<AddressValues>('lastName'),
+  notEmpty<AddressValues>('street'),
+  notEmpty<AddressValues>('zipCode'),
+  notEmpty<AddressValues>('city'),
 ]);
 
 const AddressForm: React.FC = () => {
@@ -39,6 +42,7 @@ const AddressForm: React.FC = () => {
           value={formik.values.firstName || ''}
           placeholder="First name"
           onChange={formik.handleChange}
+          errors={formik.errors.firstName}
         />
       </Row>
       <Row label="Last name">
@@ -47,6 +51,7 @@ const AddressForm: React.FC = () => {
           value={formik.values.lastName || ''}
           placeholder="Last name"
           onChange={formik.handleChange}
+          errors={formik.errors.lastName}
         />
       </Row>
       <Row label="Company name">
@@ -55,6 +60,7 @@ const AddressForm: React.FC = () => {
           value={formik.values.companyName || ''}
           placeholder="Company name"
           onChange={formik.handleChange}
+          errors={formik.errors.companyName}
         />
       </Row>
       <Row label="Street">
@@ -63,6 +69,7 @@ const AddressForm: React.FC = () => {
           value={formik.values.street || ''}
           placeholder="Street"
           onChange={formik.handleChange}
+          errors={formik.errors.street}
         />
       </Row>
       <Row label="Zip code">
@@ -71,6 +78,7 @@ const AddressForm: React.FC = () => {
           value={formik.values.zipCode || ''}
           placeholder="Zip code"
           onChange={formik.handleChange}
+          errors={formik.errors.zipCode}
         />
       </Row>
       <Row label="City">
@@ -79,6 +87,7 @@ const AddressForm: React.FC = () => {
           value={formik.values.city || ''}
           placeholder="City"
           onChange={formik.handleChange}
+          errors={formik.errors.city}
         />
       </Row>
     </Form>

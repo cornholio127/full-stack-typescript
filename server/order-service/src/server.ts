@@ -37,6 +37,9 @@ const resolvers = {
       return orderItemResolver.orderItemById(orderItem.id);
     },
   },
+  Mutation: {
+    createOrder: orderResolver.createOrder,
+  },
 };
 
 const server = new ApolloServer({

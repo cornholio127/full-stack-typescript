@@ -4,6 +4,7 @@ import { Row } from '../../components/form';
 import { useFormikContext } from 'formik';
 import Icon from '../../components/icon';
 import { validate, notEmpty } from '../../validation';
+import styled from 'styled-components';
 
 export interface PaymentOptionsValues {
   payBy: string;
@@ -12,6 +13,12 @@ export interface PaymentOptionsValues {
 export const validatePaymentMethod = validate([
   notEmpty<PaymentOptionsValues>('payBy'),
 ]);
+
+const StyledError = styled.div`
+  color: #e80000;
+  font-size: 13px;
+  font-weight: 500;
+`;
 
 const PaymentMethod: React.FC = () => {
   const formik = useFormikContext<PaymentOptionsValues>();
@@ -25,6 +32,11 @@ const PaymentMethod: React.FC = () => {
           value={formik.values.payBy}
           onChange={formik.handleChange}
         />
+        {formik.errors.payBy && (
+          <StyledError>
+            {((formik.errors.payBy as unknown) as string[])[0]}
+          </StyledError>
+        )}
       </Row>
     </Box>
   );

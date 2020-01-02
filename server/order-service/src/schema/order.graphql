@@ -45,3 +45,7 @@ type Query {
   orders: [Order!]!
   orderSummary(items: [ItemInput!]!): OrderSummary!
 }
+
+type Mutation {
+  createOrder(items: [ItemInput!]!): Boolean!
+}

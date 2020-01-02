@@ -6,6 +6,13 @@
 // START Enums and Input Objects
 //==============================================================
 
+export enum OrderStatus {
+  CANCELLED = "CANCELLED",
+  CREATED = "CREATED",
+  PAID = "PAID",
+  SHIPPED = "SHIPPED",
+}
+
 export interface AddressInput {
   id?: string | null;
   firstName: string;

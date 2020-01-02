@@ -3,8 +3,10 @@ import { GQLOrderItem } from '../gen/gql/types';
 import { Record } from 'tsooq';
 import { ShopOrderItem, Tables } from '../gen/db/public';
 
-const toGQLOrderItem = (row: Record): GQLOrderItem => ({
-  id: '' + row.get(ShopOrderItem.ID),
+const orderItemId = ShopOrderItem.ID.as('order_item_id');
+
+export const toGQLOrderItem = (row: Record): GQLOrderItem => ({
+  id: '' + row.get(orderItemId),
   product: { id: '' + row.get(ShopOrderItem.PRODUCT_ID) },
   quantity: row.get(ShopOrderItem.QUANTITY),
   netAmount: '' + row.get(ShopOrderItem.NET_AMOUNT),
@@ -14,7 +16,14 @@ const toGQLOrderItem = (row: Record): GQLOrderItem => ({
 
 export const orderItemById = (id: string): Promise<GQLOrderItem> => {
   return create
-    .select()
+    .select(
+      orderItemId,
+      ShopOrderItem.PRODUCT_ID,
+      ShopOrderItem.QUANTITY,
+      ShopOrderItem.NET_AMOUNT,
+      ShopOrderItem.VAT_AMOUNT,
+      ShopOrderItem.GROSS_AMOUNT
+    )
     .from(Tables.SHOP_ORDER_ITEM)
     .where(ShopOrderItem.ID.eq(Number(id)))
     .fetchSingleMapped(toGQLOrderItem);
