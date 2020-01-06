@@ -32,7 +32,7 @@
     "graphql": "14.5.8",
     "log4js": "6.1.0",
     "pg": "7.17.0",
-    "tsooq": "0.1.16"
+    "tsooq": "0.1.19"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.9.1",

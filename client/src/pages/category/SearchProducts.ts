@@ -31,4 +31,6 @@ export interface SearchProducts {
 
 export interface SearchProductsVariables {
   categoryId: string;
+  limit: number;
+  offset: number;
 }

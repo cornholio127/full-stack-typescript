@@ -114,7 +114,9 @@ export type GQLQueryProductsByIdArgs = {
 export type GQLQuerySearchProductsArgs = {
   categoryId: Scalars['ID'],
   filters?: Maybe<Scalars['String']>,
-  orderBy?: Maybe<Scalars['String']>
+  orderBy?: Maybe<Scalars['String']>,
+  limit: Scalars['Int'],
+  offset: Scalars['Int']
 };
 
 
@@ -208,6 +210,7 @@ export type GQLResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   ProductAttributeCategory: ResolverTypeWrapper<GQLProductAttributeCategory>,
   ProductAttribute: ResolverTypeWrapper<GQLProductAttribute>,
+  Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
   InsertProductInput: GQLInsertProductInput,
   InsertImageInput: GQLInsertImageInput,
@@ -226,6 +229,7 @@ export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'],
   ProductAttributeCategory: GQLProductAttributeCategory,
   ProductAttribute: GQLProductAttribute,
+  Int: Scalars['Int'],
   Mutation: {},
   InsertProductInput: GQLInsertProductInput,
   InsertImageInput: GQLInsertImageInput,
@@ -235,7 +239,7 @@ export type GQLResolversParentTypes = {
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   productById?: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductByIdArgs, 'id'>>,
   productsById?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductsByIdArgs, 'ids'>>,
-  searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId'>>,
+  searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId' | 'limit' | 'offset'>>,
   categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
   categoryById?: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQueryCategoryByIdArgs, 'id'>>,
 };

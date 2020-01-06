@@ -14,7 +14,7 @@ import {
   ShopImage,
   ShopProductAttr,
 } from '../gen/db/public';
-import { DbFunctions, Record } from 'tsooq';
+import { DbFunctions, Record, select } from 'tsooq';
 import { PoolClient } from 'pg';
 import { groupBy, mapGroup } from './util';
 
@@ -121,7 +121,17 @@ export const searchProducts: GQLQueryResolvers['searchProducts'] = async (
   source,
   args
 ) => {
+  const { categoryId, limit, offset } = args;
   const orderField = ShopProduct.ACTIVATION_DATE.desc();
+  const productQuery = select(ShopProduct.ID)
+    .from(Tables.SHOP_PRODUCT)
+    .where(
+      ShopProduct.CATEGORY_ID.eq(Number(categoryId)).and(
+        ShopProduct.ACTIVATION_DATE.lte(new Date())
+      )
+    )
+    .limit(limit)
+    .offset(offset);
   const recs = await create
     .select(
       ...Tables.SHOP_PRODUCT.fields,
@@ -138,11 +148,7 @@ export const searchProducts: GQLQueryResolvers['searchProducts'] = async (
     .on(ShopProduct.VAT_GROUP_ID.eq(ShopVatGroup.ID))
     .join(Tables.SHOP_IMAGE)
     .on(ShopImage.PRODUCT_ID.eq(ShopProduct.ID))
-    .where(
-      ShopProduct.CATEGORY_ID.eq(Number(args.categoryId)).and(
-        ShopProduct.ACTIVATION_DATE.lte(new Date())
-      )
-    )
+    .where(ShopProduct.ID.in(productQuery))
     .orderBy(orderField)
     .fetch();
   return mapGroup(

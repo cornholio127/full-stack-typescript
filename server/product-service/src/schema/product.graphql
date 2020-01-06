@@ -41,7 +41,7 @@ type Product @key(fields: "id") {
 type Query {
   productById(id:ID!): Product
   productsById(ids:[ID!]!): [Product!]!
-  searchProducts(categoryId: ID!, filters: String, orderBy: String): [Product!]!
+  searchProducts(categoryId: ID!, filters: String, orderBy: String, limit: Int!, offset: Int!): [Product!]!
   categories: [Category!]!
   categoryById(id: ID!): Category
 }

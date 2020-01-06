@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '../../components/layout';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
@@ -12,8 +12,8 @@ import { useSelectedCategory } from '../../hooks';
 import { ActionButton } from '../../components/button';
 
 const searchProductsQuery = gql`
-  query SearchProducts($categoryId: ID!) {
-    searchProducts(categoryId: $categoryId) {
+  query SearchProducts($categoryId: ID!, $limit: Int!, $offset: Int!) {
+    searchProducts(categoryId: $categoryId, limit: $limit, offset: $offset) {
       id
       name
       price {
@@ -43,44 +43,63 @@ const Category: React.FC = () => {
   const { slug } = useParams<RouteParams>();
   const categoryId = idFromSlug(slug);
   const selectedCategory = useSelectedCategory();
+  const [loadingMore, setLoadingMore] = useState(false);
   const categoryName = selectedCategory?.name || '';
-  const { data, loading } = useQuery<SearchProducts, SearchProductsVariables>(
-    searchProductsQuery,
-    {
-      fetchPolicy: 'cache-and-network',
-      variables: { categoryId },
-    }
-  );
+  const { data, loading, fetchMore } = useQuery<
+    SearchProducts,
+    SearchProductsVariables
+  >(searchProductsQuery, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      categoryId,
+      limit: 15,
+      offset: 0,
+    },
+  });
   const loadMore = () => {
-    // TODO
+    setLoadingMore(true);
+    fetchMore({
+      variables: {
+        offset: data?.searchProducts.length || 0,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign({}, prev, {
+          searchProducts: [
+            ...prev.searchProducts,
+            ...fetchMoreResult.searchProducts,
+          ],
+        });
+      },
+    }).finally(() => setLoadingMore(false));
   };
   return (
     <Layout>
       <Box width="720px" margin="0 auto">
         <Heading level={2}>{categoryName}</Heading>
         <Box>
-          {data && !loading ? (
-            <>
-              {rows(data.searchProducts.slice(0, 20), 3).map((row, i) => (
-                <Box key={i} direction="row" margin={{ bottom: '32px' }}>
-                  {row.map((p, j) => (
-                    <ProductTile key={j} product={p} />
-                  ))}
-                </Box>
-              ))}
-              <Box direction="row" justify="center">
-                <ActionButton label="Load more" onClick={loadMore} />
+          {data &&
+            (!loading || loadingMore) &&
+            rows(data.searchProducts, 3).map((row, i) => (
+              <Box key={i} direction="row" margin={{ bottom: '32px' }}>
+                {row.map((p, j) => (
+                  <ProductTile key={j} product={p} />
+                ))}
               </Box>
-            </>
-          ) : (
-            rows([...Array(20).keys()], 3).map((row, i) => (
+            ))}
+          {(!data || loading) &&
+            rows([...Array(15).keys()], 3).map((row, i) => (
               <Box key={i} direction="row" margin={{ bottom: '32px' }}>
                 {row.map((_, j) => (
                   <SkeletonTile key={j} />
                 ))}
               </Box>
-            ))
-          )}
+            ))}
+          <Box direction="row" justify="center">
+            <ActionButton label="Load more" onClick={loadMore} />
+          </Box>
         </Box>
       </Box>
     </Layout>
