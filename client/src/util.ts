@@ -1,3 +1,5 @@
+import { FilterType } from './components/filter/types';
+
 export const slug = (label: string, id: string): string =>
   label
     .toLowerCase()
@@ -8,6 +10,18 @@ export const slug = (label: string, id: string): string =>
 export const idFromSlug = (slug: string): string => {
   const parts = slug.split('-');
   return parts[parts.length - 1];
+};
+
+export const categoryUri = (slug: string, filter: FilterType[]): string => {
+  let query = '';
+  if (filter.length > 0) {
+    query =
+      '?' +
+      filter
+        .map(f => `${encodeURIComponent(f[0])}=${encodeURIComponent(f[1])}`)
+        .join('&');
+  }
+  return `/tag/${slug}${query}`;
 };
 
 export const currencyToInt = (c: string): number => {

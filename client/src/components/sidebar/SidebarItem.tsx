@@ -4,7 +4,7 @@ import Marker from './Marker';
 import { Box } from 'grommet';
 import { AllCategories_categories as Category } from './AllCategories';
 import { useSelectedCategory } from '../../hooks';
-import { slug } from '../../util';
+import { slug, categoryUri } from '../../util';
 
 interface Props {
   category: Category;
@@ -15,7 +15,7 @@ const SidebarItem: React.FC<Props> = ({ category }) => {
   return (
     <Box direction="row">
       <Marker visible={selectedCategory?.id === category.id} />
-      <NavLink to={`/tag/${slug(category.name, category.id)}`}>
+      <NavLink to={categoryUri(slug(category.name, category.id), [])}>
         {category.name}
       </NavLink>
     </Box>

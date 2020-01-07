@@ -6,8 +6,8 @@ import { SearchProducts, SearchProductsVariables } from './SearchProducts';
 import { Box, Heading } from 'grommet';
 import ProductTile from './ProductTile';
 import SkeletonTile from './SkeletonTile';
-import { useParams } from 'react-router';
-import { idFromSlug } from '../../util';
+import { useParams, useHistory, useLocation } from 'react-router';
+import { idFromSlug, categoryUri } from '../../util';
 import { useSelectedCategory } from '../../hooks';
 import { ActionButton } from '../../components/button';
 import Filter from '../../components/filter';
@@ -51,8 +51,18 @@ interface RouteParams {
   slug: string;
 }
 
+const parseFilter = (search: string): FilterType[] => {
+  const parts = search.substring(1).split('&');
+  return parts.map(part => {
+    const nv = part.split('=');
+    return [decodeURIComponent(nv[0]), decodeURIComponent(nv[1])];
+  });
+};
+
 const Category: React.FC = () => {
-  const [filter, setFilter] = useState<FilterType[]>([]);
+  const history = useHistory();
+  const location = useLocation();
+  const filter = parseFilter(location.search);
   const { slug } = useParams<RouteParams>();
   const categoryId = idFromSlug(slug);
   const selectedCategory = useSelectedCategory();
@@ -70,6 +80,9 @@ const Category: React.FC = () => {
       offset: 0,
     },
   });
+  const setFilter = (filter: FilterType[]) => {
+    history.push(categoryUri(slug, filter));
+  };
   const loadMore = () => {
     setLoadingMore(true);
     fetchMore({
