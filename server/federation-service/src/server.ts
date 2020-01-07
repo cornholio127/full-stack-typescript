@@ -1,5 +1,6 @@
+import express from 'express';
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
-import { ApolloServer } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 import { configure, getLogger } from 'log4js';
 import env from './env';
 
@@ -55,6 +56,10 @@ const server = new ApolloServer({
   playground: true,
 });
 
-server
-  .listen({ port: env.serverPort })
-  .then(({ url }) => getLogger().info(`Server ready at ${url}`));
+const app = express();
+
+server.applyMiddleware({ app, path: '/api' });
+
+app.listen({ port: env.serverPort }, () =>
+  getLogger().info(`Server ready at http://localhost:${env.serverPort}/api`)
+);

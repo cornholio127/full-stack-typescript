@@ -77,8 +77,10 @@ const theme = deepMerge(grommet, {
   },
 });
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const client = new ApolloClient({
-  uri: 'http://localhost:9000',
+  uri: isProduction ? '/api/' : 'http://localhost:9000/api/',
   request: (operation: Operation) => {
     const token = window.localStorage.getItem('token');
     operation.setContext({

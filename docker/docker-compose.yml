@@ -39,17 +39,17 @@ services:
     
     order-service:
         depends_on:
-            - db
+         - db
         image: shop-order-service:latest
         user: "node"
         working_dir: /app
         environment:
-            - NODE_ENV=production
-            - DB_HOST=db
-            - DB_PORT=5432
-            - SERVER_PORT=9000
+         - NODE_ENV=production
+         - DB_HOST=db
+         - DB_PORT=5432
+         - SERVER_PORT=9000
         volumes:
-            - order_service_log:/log
+         - order_service_log:/log
         restart: always
     
     federation-service:
@@ -72,7 +72,7 @@ services:
         volumes:
          - federation_service_log:/log
         restart: always
-    
+   
     frontend-proxy:
         depends_on:
          - federation-service

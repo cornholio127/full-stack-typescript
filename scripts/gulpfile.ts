@@ -53,4 +53,13 @@ export const buildServices = series(buildProductService, buildUserService, build
 
 export const rebuildServices = series(removeServiceImages, buildServices);
 
+task('installClient', cmd('npm install', '../client'));
+const buildClient = (() => {
+  task('buildClient', cmd('npm run build', '../client'));
+  task('copyClient', () => src('../client/build/**/*').pipe(dest('../docker/frontend-proxy/build')));
+  return series('buildClient', 'copyClient');
+})();
+task('buildFrontendProxyDocker', cmd('docker build -t shop-frontend-proxy .', '../docker/frontend-proxy'));
+export const buildFrontendProxy = series('installClient', buildClient, 'buildFrontendProxyDocker');
+
 export default rebuildServices;
