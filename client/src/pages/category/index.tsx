@@ -52,6 +52,9 @@ interface RouteParams {
 }
 
 const parseFilter = (search: string): FilterType[] => {
+  if (search === undefined || search.length < 2) {
+    return [];
+  }
   const parts = search.substring(1).split('&');
   return parts.map(part => {
     const nv = part.split('=');
