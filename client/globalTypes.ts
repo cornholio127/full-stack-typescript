@@ -24,6 +24,11 @@ export interface AddressInput {
   country: string;
 }
 
+export interface Filter {
+  name: string;
+  value: string;
+}
+
 export interface InsertUserInput {
   email: string;
   password: string;

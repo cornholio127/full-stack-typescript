@@ -10,10 +10,22 @@ import { useParams } from 'react-router';
 import { idFromSlug } from '../../util';
 import { useSelectedCategory } from '../../hooks';
 import { ActionButton } from '../../components/button';
+import Filter from '../../components/filter';
+import { FilterType } from '../../components/filter/types';
 
 const searchProductsQuery = gql`
-  query SearchProducts($categoryId: ID!, $limit: Int!, $offset: Int!) {
-    searchProducts(categoryId: $categoryId, limit: $limit, offset: $offset) {
+  query SearchProducts(
+    $categoryId: ID!
+    $filters: [Filter!]!
+    $limit: Int!
+    $offset: Int!
+  ) {
+    searchProducts(
+      categoryId: $categoryId
+      filters: $filters
+      limit: $limit
+      offset: $offset
+    ) {
       id
       name
       price {
@@ -40,6 +52,7 @@ interface RouteParams {
 }
 
 const Category: React.FC = () => {
+  const [filter, setFilter] = useState<FilterType[]>([]);
   const { slug } = useParams<RouteParams>();
   const categoryId = idFromSlug(slug);
   const selectedCategory = useSelectedCategory();
@@ -52,6 +65,7 @@ const Category: React.FC = () => {
     fetchPolicy: 'cache-and-network',
     variables: {
       categoryId,
+      filters: filter.map(f => ({ name: f[0], value: f[1] })),
       limit: 15,
       offset: 0,
     },
@@ -79,6 +93,7 @@ const Category: React.FC = () => {
     <Layout>
       <Box width="720px" margin="0 auto">
         <Heading level={2}>{categoryName}</Heading>
+        <Filter filter={filter} onChange={setFilter} />
         <Box>
           {data &&
             (!loading || loadingMore) &&

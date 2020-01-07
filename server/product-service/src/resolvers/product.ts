@@ -4,6 +4,7 @@ import {
   GQLProduct,
   GQLMutationResolvers,
   GQLImage,
+  GQLFilter,
 } from '../gen/gql/types';
 import { create } from '../db';
 import {
@@ -13,8 +14,9 @@ import {
   ShopVatGroup,
   ShopImage,
   ShopProductAttr,
+  ShopProductAttrType,
 } from '../gen/db/public';
-import { DbFunctions, Record, select } from 'tsooq';
+import { DbFunctions, Record, select, Condition } from 'tsooq';
 import { PoolClient } from 'pg';
 import { groupBy, mapGroup } from './util';
 
@@ -117,19 +119,53 @@ export const categoryProducts: GQLCategoryResolvers['products'] = source => {
     });
 };
 
+const createAttrCondition = (filters: GQLFilter[]): Condition | undefined => {
+  const map: { [index: string]: string[] } = {};
+  for (const f of filters) {
+    let values = map[f.name];
+    if (values === undefined) {
+      values = [];
+      map[f.name] = values;
+    }
+    values.push(f.value);
+  }
+  let condition: Condition | undefined = undefined;
+  for (const f of Object.entries(map)) {
+    const c = ShopProductAttrType.NAME.eq(f[0]).and(
+      f[1].length === 1
+        ? ShopProductAttr.VALUE.eq(f[1][0])
+        : ShopProductAttr.VALUE.in(f[1])
+    );
+    if (condition === undefined) {
+      condition = c;
+    } else {
+      condition = condition.and(c);
+    }
+  }
+  return condition;
+};
+
 export const searchProducts: GQLQueryResolvers['searchProducts'] = async (
   source,
   args
 ) => {
-  const { categoryId, limit, offset } = args;
+  const { categoryId, filters, limit, offset } = args;
   const orderField = ShopProduct.ACTIVATION_DATE.desc();
+  const attrCondition = createAttrCondition(filters);
+  let productCondition = ShopProduct.CATEGORY_ID.eq(Number(categoryId)).and(
+    ShopProduct.ACTIVATION_DATE.lte(new Date())
+  );
+  if (attrCondition) {
+    const attrQuery = select(ShopProductAttr.PRODUCT_ID)
+      .from(Tables.SHOP_PRODUCT_ATTR)
+      .join(Tables.SHOP_PRODUCT_ATTR_TYPE)
+      .on(ShopProductAttr.ATTR_TYPE_ID.eq(ShopProductAttrType.ID))
+      .where(attrCondition);
+    productCondition = productCondition.and(ShopProduct.ID.in(attrQuery));
+  }
   const productQuery = select(ShopProduct.ID)
     .from(Tables.SHOP_PRODUCT)
-    .where(
-      ShopProduct.CATEGORY_ID.eq(Number(categoryId)).and(
-        ShopProduct.ACTIVATION_DATE.lte(new Date())
-      )
-    )
+    .where(productCondition)
     .limit(limit)
     .offset(offset);
   const recs = await create

@@ -2,6 +2,8 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
+import { Filter } from "./../../../globalTypes";
+
 // ====================================================
 // GraphQL query operation: SearchProducts
 // ====================================================
@@ -31,6 +33,7 @@ export interface SearchProducts {
 
 export interface SearchProductsVariables {
   categoryId: string;
+  filters: Filter[];
   limit: number;
   offset: number;
 }

@@ -38,10 +38,15 @@ type Product @key(fields: "id") {
   specification: [ProductAttributeCategory!]!
 }
 
+input Filter {
+  name: String!
+  value: String!
+}
+
 type Query {
   productById(id:ID!): Product
   productsById(ids:[ID!]!): [Product!]!
-  searchProducts(categoryId: ID!, filters: String, orderBy: String, limit: Int!, offset: Int!): [Product!]!
+  searchProducts(categoryId: ID!, filters: [Filter!]!, orderBy: String, limit: Int!, offset: Int!): [Product!]!
   categories: [Category!]!
   categoryById(id: ID!): Category
 }

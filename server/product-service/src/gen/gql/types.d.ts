@@ -23,6 +23,11 @@ export type GQLCategory = {
   products: Array<GQLProduct>,
 };
 
+export type GQLFilter = {
+  name: Scalars['String'],
+  value: Scalars['String'],
+};
+
 export type GQLImage = {
    __typename?: 'Image',
   id: Scalars['ID'],
@@ -113,7 +118,7 @@ export type GQLQueryProductsByIdArgs = {
 
 export type GQLQuerySearchProductsArgs = {
   categoryId: Scalars['ID'],
-  filters?: Maybe<Scalars['String']>,
+  filters: Array<GQLFilter>,
   orderBy?: Maybe<Scalars['String']>,
   limit: Scalars['Int'],
   offset: Scalars['Int']
@@ -210,6 +215,7 @@ export type GQLResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   ProductAttributeCategory: ResolverTypeWrapper<GQLProductAttributeCategory>,
   ProductAttribute: ResolverTypeWrapper<GQLProductAttribute>,
+  Filter: GQLFilter,
   Int: ResolverTypeWrapper<Scalars['Int']>,
   Mutation: ResolverTypeWrapper<{}>,
   InsertProductInput: GQLInsertProductInput,
@@ -229,6 +235,7 @@ export type GQLResolversParentTypes = {
   Boolean: Scalars['Boolean'],
   ProductAttributeCategory: GQLProductAttributeCategory,
   ProductAttribute: GQLProductAttribute,
+  Filter: GQLFilter,
   Int: Scalars['Int'],
   Mutation: {},
   InsertProductInput: GQLInsertProductInput,
@@ -239,7 +246,7 @@ export type GQLResolversParentTypes = {
 export type GQLQueryResolvers<ContextType = any, ParentType extends GQLResolversParentTypes['Query'] = GQLResolversParentTypes['Query']> = {
   productById?: Resolver<Maybe<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductByIdArgs, 'id'>>,
   productsById?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQueryProductsByIdArgs, 'ids'>>,
-  searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId' | 'limit' | 'offset'>>,
+  searchProducts?: Resolver<Array<GQLResolversTypes['Product']>, ParentType, ContextType, RequireFields<GQLQuerySearchProductsArgs, 'categoryId' | 'filters' | 'limit' | 'offset'>>,
   categories?: Resolver<Array<GQLResolversTypes['Category']>, ParentType, ContextType>,
   categoryById?: Resolver<Maybe<GQLResolversTypes['Category']>, ParentType, ContextType, RequireFields<GQLQueryCategoryByIdArgs, 'id'>>,
 };
