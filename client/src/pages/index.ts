@@ -7,6 +7,7 @@ import Login from './login';
 import Checkout from './checkout';
 import Register from './register';
 import Orders from './orders';
+import Location from './cms/Location';
 
 export {
   Home,
@@ -18,4 +19,5 @@ export {
   Checkout,
   Register,
   Orders,
+  Location,
 };

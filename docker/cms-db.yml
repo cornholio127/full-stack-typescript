@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+    cms-db:
+        image: cms-database:latest
+        volumes:
+         - cms_db_data:/var/lib/postgresql/data
+         - cms_db_log:/var/log/postgresql
+        ports:
+         - "5432:5432"
+
+volumes:
+    cms_db_data:
+    cms_db_log:

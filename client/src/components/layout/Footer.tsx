@@ -25,9 +25,9 @@ const Footer: React.FC = () => {
         <Link url="/cms/about/disclaimer">Disclaimer</Link>
       </List>
       <List title="Locations">
-        <Link url="/cms/locations/zurich">Zurich</Link>
-        <Link url="/cms/locations/bern">Bern</Link>
-        <Link url="/cms/locations/lausanne">Lausanne</Link>
+        <Link url="/locations/zurich">Zurich</Link>
+        <Link url="/locations/bern">Bern</Link>
+        <Link url="/locations/lausanne">Lausanne</Link>
       </List>
     </HorizontalItems>
   );

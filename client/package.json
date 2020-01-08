@@ -64,5 +64,6 @@
       "last 1 safari version",
       "last 1 edge version"
     ]
-  }
+  },
+  "proxy": "http://localhost:1337"
 }

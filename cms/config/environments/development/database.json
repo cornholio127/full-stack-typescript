@@ -1,0 +1,17 @@
+{
+  "defaultConnection": "default",
+  "connections": {
+    "default": {
+      "connector": "bookshelf",
+      "settings": {
+        "client": "postgres",
+        "host": "localhost",
+        "port": "5432",
+        "database": "cms",
+        "username": "cms_user",
+        "password": "password"
+      },
+      "options": {}
+    }
+  }
+}

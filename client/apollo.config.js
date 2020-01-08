@@ -1,8 +1,8 @@
 module.exports = {
   client: {
     service: {
-      name: 'shop',
-      url: 'http://localhost:9000',
+      name: 'gateway',
+      url: 'http://localhost:9000/api',
     },
   },
 };

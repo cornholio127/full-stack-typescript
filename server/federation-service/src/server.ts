@@ -3,6 +3,8 @@ import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server-express';
 import { configure, getLogger } from 'log4js';
 import env from './env';
+import { transformSchemaFederation } from 'graphql-transform-federation';
+import { weaveSchemas } from 'graphql-weaver';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -24,6 +26,36 @@ class CustomRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   }
 }
 
+(async () => {
+  const namespacedSchema = await weaveSchemas({
+    endpoints: [
+      {
+        namespace: 'cms',
+        typePrefix: 'Cms',
+        url: 'http://localhost:1337/graphql',
+      },
+    ],
+  });
+
+  const federationSchema = transformSchemaFederation(namespacedSchema, {
+    Query: {
+      extend: true,
+    },
+    Mutation: {
+      extend: false,
+    },
+  });
+
+  const app = express();
+
+  const server = new ApolloServer({
+    schema: federationSchema,
+  });
+
+  server.applyMiddleware({ app });
+  app.listen({ port: 9005 });
+})();
+
 const gateway = new ApolloGateway({
   serviceList: [
     {
@@ -37,6 +69,10 @@ const gateway = new ApolloGateway({
     {
       name: 'order-service',
       url: `http://${env.orderServiceHost}:${env.orderServicePort}`,
+    },
+    {
+      name: 'cms-gateway',
+      url: 'http://localhost:9005/graphql',
     },
   ],
   buildService({ url }) {

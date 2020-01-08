@@ -187,6 +187,9 @@ const App: React.FC = () => {
           <Route path="/cms">
             <pages.Cms />
           </Route>
+          <Route path="/locations/:slug">
+            <pages.Location />
+          </Route>
         </Grommet>
       </Router>
     </ApolloProvider>

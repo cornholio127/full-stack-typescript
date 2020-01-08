@@ -29,6 +29,8 @@ services:
         volumes:
          - user_service_log:/log
         restart: always
+        ports:
+         - "9001:9000"
     
     product-service:
         depends_on:
@@ -44,6 +46,8 @@ services:
         volumes:
          - product_service_log:/log
         restart: always
+        ports:
+         - "9002:9000"
     
     order-service:
         depends_on:
@@ -59,30 +63,9 @@ services:
         volumes:
          - order_service_log:/log
         restart: always
-    
-    federation-service:
-        depends_on:
-         - user-service
-         - product-service
-         - order-service
-        image: shop-federation-service:latest
-        user: "node"
-        working_dir: /app
-        environment:
-         - NODE_ENV=production
-         - USER_SERVICE_HOST=user-service
-         - USER_SERVICE_PORT=9000
-         - PRODUCT_SERVICE_HOST=product-service
-         - PRODUCT_SERVICE_PORT=9000
-         - ORDER_SERVICE_HOST=order-service
-         - ORDER_SERVICE_PORT=9000
-         - SERVER_PORT=9000
-        volumes:
-         - federation_service_log:/log
-        restart: always
         ports:
-          - "9000:9000"
-
+         - "9003:9000"
+    
 volumes:
     db_data:
     db_log:

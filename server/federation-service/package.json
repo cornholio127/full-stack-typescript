@@ -26,6 +26,8 @@
   "dependencies": {
     "@apollo/gateway": "0.11.6",
     "apollo-server-express": "2.9.15",
+    "graphql-transform-federation": "2.0.1",
+    "graphql-weaver": "0.13.7",
     "log4js": "6.1.0"
   },
   "devDependencies": {
