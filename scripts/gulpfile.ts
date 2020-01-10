@@ -62,4 +62,19 @@ const buildClient = (() => {
 task('buildFrontendProxyDocker', cmd('docker build -t shop-frontend-proxy .', '../docker/frontend-proxy'));
 export const buildFrontendProxy = series('installClient', buildClient, 'buildFrontendProxyDocker');
 
+task('removeCmsImage', cmd('docker rmi cms', '.'));
+task('buildCmsDatabase', cmd('docker build -t cms-database .', '../docker/cms/database'));
+task('installCms', cmd('npm install', '../cms'));
+task('compileCms', cmd('npm run prodbuild', '../cms'));
+task('copyCmsPackageJson', () => src('../cms/package*.json').pipe(dest(`../docker/cms/server/build`)));
+task('copyCmsApi', () => src('../cms/api/**/*').pipe(dest('../docker/cms/server/build/api')));
+task('copyCmsBuild', () => src('../cms/build/**/*').pipe(dest('../docker/cms/server/build/build')));
+task('copyCmsComponents', () => src('../cms/components/**/*').pipe(dest('../docker/cms/server/build/components')));
+task('copyCmsConfig', () => src('../cms/config/**/*').pipe(dest('../docker/cms/server/build/config')));
+task('copyCmsExports', () => src('../cms/exports/**/*').pipe(dest('../docker/cms/server/build/exports')));
+task('copyCmsExtensions', () => src('../cms/extensions/**/*').pipe(dest('../docker/cms/server/build/extensions')));
+task('copyCmsPublic', () => src('../cms/public/**/*').pipe(dest('../docker/cms/server/build/public')))
+task('buildCmsDocker', cmd('docker build --no-cache -t cms .', '../docker/cms/server'));
+export const buildCms = series('installCms', 'compileCms', 'copyCmsPackageJson', 'copyCmsApi', 'copyCmsBuild', 'copyCmsComponents', 'copyCmsConfig', 'copyCmsExports', 'copyCmsExtensions', 'copyCmsPublic', 'buildCmsDocker');
+
 export default rebuildServices;

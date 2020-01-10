@@ -28,7 +28,8 @@
     "apollo-server-express": "2.9.15",
     "graphql-transform-federation": "2.0.1",
     "graphql-weaver": "0.13.7",
-    "log4js": "6.1.0"
+    "log4js": "6.1.0",
+    "node-fetch": "2.6.0"
   },
   "devDependencies": {
     "@types/node": "13.1.2",

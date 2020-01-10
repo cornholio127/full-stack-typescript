@@ -5,7 +5,6 @@ import { gql } from 'apollo-boost';
 import { useQuery } from '@apollo/react-hooks';
 import { LocationQuery, LocationQueryVariables } from './LocationQuery';
 import Layout from '../../components/layout';
-import Text from '../../components/text';
 
 interface RouteParams {
   slug: string;
@@ -33,7 +32,6 @@ const locationQuery = gql`
 
 const Location: React.FC = () => {
   const { slug } = useParams<RouteParams>();
-  console.log(slug);
   const { data } = useQuery<LocationQuery, LocationQueryVariables>(
     locationQuery,
     {

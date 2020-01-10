@@ -7,6 +7,12 @@ services:
          - db_data:/var/lib/postgresql/data
          - db_log:/var/log/postgresql
     
+    cms-db:
+        image: cms-database:latest
+        volumes:
+         - cms_db_data:/var/lib/postgresql/data
+         - cms_db_log:/var/log/postgresql
+    
     user-service:
         depends_on:
          - db
@@ -51,12 +57,34 @@ services:
         volumes:
          - order_service_log:/log
         restart: always
+
+    cms:
+        depends_on:
+         - cms-db
+        image: cms:latest
+        user: "node"
+        working_dir: /app
+        environment:
+         - NODE_ENV=production
+         - APP_HOST=cms
+         - NODE_PORT=1337
+         - DATABASE_HOST=cms-db
+         - DATABASE_PORT=5432
+         - DATABASE_NAME=cms
+         - DATABASE_USERNAME=cms_user
+         - DATABASE_PASSWORD=password
+        volumes:
+         - cms_uploads:/app/public/uploads
+        restart: always
+        ports:
+         - "1337:1337"
     
     federation-service:
         depends_on:
          - user-service
          - product-service
          - order-service
+         - cms
         image: shop-federation-service:latest
         user: "node"
         working_dir: /app
@@ -68,6 +96,8 @@ services:
          - PRODUCT_SERVICE_PORT=9000
          - ORDER_SERVICE_HOST=order-service
          - ORDER_SERVICE_PORT=9000
+         - CMS_HOST=cms
+         - CMS_PORT=1337
          - SERVER_PORT=9000
         volumes:
          - federation_service_log:/log
@@ -87,3 +117,6 @@ volumes:
     product_service_log:
     order_service_log:
     federation_service_log:
+    cms_db_data:
+    cms_db_log:
+    cms_uploads:

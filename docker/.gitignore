@@ -1,2 +1,3 @@
 # Ignore built project artifacts
 */build/**/*
+cms/*/build/**/*
