@@ -5,6 +5,7 @@ const readWords = (file: string) => fs.readFileSync(file).toString().split(/\r?\
 
 const adjectives = readWords('data/adjectives.txt');
 const nouns = readWords('data/nouns.txt');
+const images = readWords('data/images.txt');
 
 interface Image {
   url: string;
@@ -35,6 +36,10 @@ const randomAdjective = (): string => {
 
 const randomNoun = (): string => {
   return nouns[random(nouns.length)];
+};
+
+const randomImage = (): string => {
+  return images[random(images.length)];
 };
 
 const capital = (s: string): string => s.substring(0, 1).toUpperCase() + s.toLowerCase().substring(1);
@@ -72,10 +77,6 @@ const generateDescription = (): string => {
 const generatePrice = (): string => {
   const cents = random(20) * 5;
   return `${random(10000)}.${cents < 10 ? '0' : ''}${cents}`;
-};
-
-const generateImageUrl = (): string => {
-  return `https://picsum.photos/id/${random(1084) + 1}/600/400`;
 };
 
 const generateManufacturer = (): string => {
@@ -152,13 +153,13 @@ const generateProduct = (): Product => {
     description: generateDescription(),
     price: generatePrice(),
     images: [{
-      url: generateImageUrl(),
+      url: randomImage(),
       isMain: true,
     }, {
-      url: generateImageUrl(),
+      url: randomImage(),
       isMain: false,
     }, {
-      url: generateImageUrl(),
+      url: randomImage(),
       isMain: false,
     }],
     specification: generateSpecification(),
@@ -173,7 +174,7 @@ const insertProducts = async () => {
       query: 'mutation InsertProduct($p: InsertProductInput!) {insertProduct(product:$p)}',
       variables: { p },
     };
-    await axios.post('http://localhost:9002', data).catch(err => console.log(err.response.data));
+    await axios.post('http://localhost:9000/api/', data).catch(err => console.log(err));
   }
 };
 
