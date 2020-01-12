@@ -1,12 +1,8 @@
-import { ApolloServer, gql } from 'apollo-server';
+import { ApolloServer } from 'apollo-server';
 import { buildFederatedSchema } from '@apollo/federation';
-import fs from 'fs';
 import { configure, getLogger } from 'log4js';
-import * as productResolver from './resolvers/product';
-import * as categoryResolver from './resolvers/category';
-import * as imageResolver from './resolvers/image';
-import * as specificationResolver from './resolvers/specification';
-import { GQLProduct, GQLImage, GQLCategory } from './gen/gql/types';
+import resolvers from './resolvers';
+import typeDefs from './schema';
 import env from './env';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
@@ -19,39 +15,6 @@ configure({
     default: { appenders: ['console'], level: 'trace' },
   },
 });
-
-const typeDefs = gql(
-  fs.readFileSync(__dirname.concat('/schema/product.graphql'), 'utf8')
-);
-const resolvers = {
-  Query: {
-    productById: productResolver.productByIdGql,
-    productsById: productResolver.productsById,
-    searchProducts: productResolver.searchProducts,
-    categories: categoryResolver.categories,
-    categoryById: categoryResolver.categoryByIdGql,
-  },
-  Category: {
-    __resolveReference: (category: GQLCategory) => {
-      return categoryResolver.categoryById(category.id);
-    },
-    products: productResolver.categoryProducts,
-  },
-  Product: {
-    __resolveReference: (product: GQLProduct) => {
-      return productResolver.productById(product.id);
-    },
-    specification: specificationResolver.productSpecification,
-  },
-  Image: {
-    __resolveReference: (image: GQLImage) => {
-      return imageResolver.imageById(image.id);
-    },
-  },
-  Mutation: {
-    insertProduct: productResolver.insertProduct,
-  },
-};
 
 const server = new ApolloServer({
   schema: buildFederatedSchema([{ typeDefs, resolvers }]),

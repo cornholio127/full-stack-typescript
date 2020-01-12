@@ -47,6 +47,7 @@
     "@types/sinon": "7.5.1",
     "@typescript-eslint/eslint-plugin": "2.15.0",
     "@typescript-eslint/parser": "2.15.0",
+    "apollo-server-testing": "2.9.16",
     "chai": "4.2.0",
     "concurrently": "5.0.2",
     "cross-env": "6.0.3",
