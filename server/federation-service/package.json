@@ -28,10 +28,12 @@
     "apollo-server-express": "2.9.15",
     "graphql-transform-federation": "2.0.1",
     "graphql-weaver": "0.13.7",
+    "jsonwebtoken": "8.5.1",
     "log4js": "6.1.0",
     "node-fetch": "2.6.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "8.3.6",
     "@types/node": "13.1.2",
     "@typescript-eslint/eslint-plugin": "2.14.0",
     "@typescript-eslint/parser": "2.14.0",

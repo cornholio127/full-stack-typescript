@@ -8,8 +8,6 @@ import * as addressResolver from './resolvers/address';
 import * as loginResolver from './resolvers/login';
 import { configure, getLogger } from 'log4js';
 import { Request, Response } from 'express';
-import { verifyAuthToken } from './resolvers/util';
-import { JwtPayload } from './resolvers/types';
 import { AuthContext } from './types';
 import { GQLUser, GQLAddress, GQLCountry } from './gen/gql/types';
 import env from './env';
@@ -64,16 +62,11 @@ interface ContextArg {
 }
 
 const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
-  const auth = (req && req.headers.authorization) || '';
-  const token = typeof auth === 'string' ? auth : auth[0];
-  if (token.startsWith('Bearer ')) {
-    const decoded = verifyAuthToken(token.substring('Bearer '.length));
-    if (typeof decoded === 'object') {
-      return {
-        userId: (decoded as JwtPayload).uid,
-        sessionId: (decoded as JwtPayload).sid,
-      };
-    }
+  if (req && req.headers['user-id'] && req.headers['session-id']) {
+    return {
+      userId: Number(req.headers['user-id']),
+      sessionId: req.headers['session-id'] as string,
+    };
   }
   return {};
 };

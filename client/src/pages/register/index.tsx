@@ -10,7 +10,7 @@ import {
   RegisterMutation,
   RegisterMutationVariables,
 } from './RegisterMutation';
-import { Box } from 'grommet';
+import { Box, Heading } from 'grommet';
 import Error from '../../components/error';
 
 interface FormValues {
@@ -44,7 +44,9 @@ const Register: React.FC = () => {
   return (
     <Layout>
       {registerResult.data ? (
-        <Box>Registration successful! {registerResult.data.insertUser}</Box>
+        <Box width="720px" margin="0 auto">
+          <Heading level={2}>Registration successful!</Heading>
+        </Box>
       ) : (
         <Formik
           initialValues={INITIAL_VALUES}

@@ -15,7 +15,7 @@ import {
 import { Record, constantResult } from 'tsooq';
 import { PoolClient } from 'pg';
 import Big from 'big.js';
-import { mapGroup, groupBy } from './util';
+import { mapGroup, groupBy, checkValidUser } from './util';
 import { toGQLOrderItem } from './orderitem';
 
 const orderId = ShopOrder.ID.as('order_id');
@@ -60,8 +60,12 @@ const computeOrderTotals = (order: GQLOrder): GQLOrder => {
   return order;
 };
 
-export const orders: GQLQueryResolvers['orders'] = async () => {
-  const userId = 1; // TODO: get userId from request
+export const orders: GQLQueryResolvers['orders'] = async (
+  source,
+  args,
+  ctx
+) => {
+  const userId = checkValidUser(ctx);
   const recs = await create
     .select(
       orderId,
@@ -94,10 +98,11 @@ export const orders: GQLQueryResolvers['orders'] = async () => {
 
 export const createOrder: GQLMutationResolvers['createOrder'] = async (
   source,
-  args
+  args,
+  ctx
 ) => {
   const { items } = args;
-  const userId = 1; // TODO: get userId from request
+  const userId = checkValidUser(ctx);
   const orderNumber = '100001'; // TODO: generate order number
   const runnable = async (client: PoolClient) => {
     const orderResult = await create

@@ -24,6 +24,7 @@ services:
          - DB_HOST=db
          - DB_PORT=5432
          - SERVER_PORT=9000
+         - JWT_SECRET=BFNpmW7B2oJm4b3HxxeTufSXyabId8IL49z6MXoQ
         volumes:
          - user_service_log:/log
         restart: always
@@ -99,6 +100,7 @@ services:
          - CMS_HOST=cms
          - CMS_PORT=1337
          - SERVER_PORT=9000
+         - JWT_SECRET=BFNpmW7B2oJm4b3HxxeTufSXyabId8IL49z6MXoQ
         volumes:
          - federation_service_log:/log
         restart: always

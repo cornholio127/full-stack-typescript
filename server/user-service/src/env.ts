@@ -5,6 +5,7 @@ interface Env {
   dbUser: string;
   dbPassword: string;
   serverPort: number;
+  jwtSecret: string;
 }
 
 const env: Env = {
@@ -14,6 +15,7 @@ const env: Env = {
   dbUser: process.env.DB_USER || 'api_user',
   dbPassword: process.env.DB_PASSWORD || 'password',
   serverPort: Number(process.env.SERVER_PORT) || 9001,
+  jwtSecret: process.env.JWT_SECRET || 's3cret',
 };
 
 export default env;

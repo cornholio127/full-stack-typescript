@@ -8,6 +8,7 @@ interface Env {
   cmsHost: string;
   cmsPort: number;
   serverPort: number;
+  jwtSecret: string;
 }
 
 const env: Env = {
@@ -20,6 +21,7 @@ const env: Env = {
   cmsHost: process.env.CMS_HOST || 'localhost',
   cmsPort: Number(process.env.CMS_PORT) || 1337,
   serverPort: Number(process.env.SERVER_PORT) || 9000,
+  jwtSecret: process.env.JWT_SECRET || 's3cret',
 };
 
 export default env;

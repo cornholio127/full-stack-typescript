@@ -12,7 +12,7 @@ import { PoolClient } from 'pg';
 import { constantResult, select, Record } from 'tsooq';
 import { getLogger } from 'log4js';
 import { AuthContext } from '../types';
-import { AuthenticationError } from 'apollo-server';
+import { AuthenticationError, ValidationError } from 'apollo-server';
 
 const checkValidUser = (ctx: unknown) => {
   const authContext = ctx as AuthContext;
@@ -49,11 +49,26 @@ export const user: GQLQueryResolvers['user'] = (source, args, context) => {
     .fetchSingleMapped(toGQLUser);
 };
 
+const validateEmail = (email: string): void => {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  if (!re.test(String(email).toLowerCase())) {
+    throw new ValidationError('Not a valid email address');
+  }
+};
+
+const validatePassword = (password: string): void => {
+  if (!password || password.length < 4) {
+    throw new ValidationError('Password must be 4 characters or longer');
+  }
+};
+
 export const insertUser: GQLMutationResolvers['insertUser'] = async (
   source,
   args
 ) => {
   const { user } = args;
+  validateEmail(user.email);
+  validatePassword(user.password);
   const pwhash = hashPassword(user.password);
   const token = generateToken();
   const runnable = async (client: PoolClient) => {

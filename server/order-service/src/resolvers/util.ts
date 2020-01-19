@@ -1,4 +1,6 @@
 import { Record, Field } from 'tsooq';
+import { AuthContext } from '../types';
+import { AuthenticationError } from 'apollo-server';
 
 type GroupMap = { [index: string]: Record[] };
 
@@ -33,4 +35,12 @@ export const mapGroup = <T1, T2>(
     (obj as any)[targetField] = recs.map(childMapFn);
     return obj;
   });
+};
+
+export const checkValidUser = (ctx: unknown) => {
+  const authContext = ctx as AuthContext;
+  if (authContext.userId === undefined) {
+    throw new AuthenticationError('Valid user required');
+  }
+  return authContext.userId;
 };

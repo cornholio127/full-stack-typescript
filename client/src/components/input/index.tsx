@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { TextInput as GrommetTextInput, Box } from 'grommet';
+import { useFormikContext } from 'formik';
 
 interface Props {
   name: string;
@@ -37,12 +38,21 @@ const TextInput: React.FC<Props> = ({
   password,
   errors,
 }) => {
+  const formik = useFormikContext();
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    if (e.keyCode === 13 || e.keyCode === 10) {
+      if (formik && formik.isValid) {
+        formik.submitForm();
+      }
+    }
+  };
   return (
     <Box>
       <StyledInput
         name={name}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         placeholder={placeholder}
         type={password === true ? 'password' : undefined}
         error={!!errors}

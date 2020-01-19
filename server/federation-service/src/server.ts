@@ -1,11 +1,14 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { ApolloGateway, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { ApolloServer } from 'apollo-server-express';
+import { ContextFunction, AuthenticationError } from 'apollo-server-core';
 import { configure, getLogger } from 'log4js';
 import env from './env';
 import { transformSchemaFederation } from 'graphql-transform-federation';
 import { weaveSchemas } from 'graphql-weaver';
 import fetch from 'node-fetch';
+import { verifyAuthToken } from './auth';
+import { JwtPayload, AuthContext } from './types';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -21,8 +24,9 @@ configure({
 class CustomRemoteGraphQLDataSource extends RemoteGraphQLDataSource {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   willSendRequest({ request, context }: any) {
-    if (context.authorization) {
-      request.http.headers.set('Authorization', context.authorization);
+    if (context.userId && context.sessionId) {
+      request.http.headers.set('user-id', context.userId);
+      request.http.headers.set('session-id', context.sessionId);
     }
   }
 }
@@ -94,12 +98,36 @@ const startCmsGateway = async () => {
     },
   });
 
+  interface ContextArg {
+    req?: Request;
+    res?: Response;
+  }
+
+  const createContext: ContextFunction<ContextArg, AuthContext> = ({ req }) => {
+    const auth = (req && req.headers.authorization) || '';
+    const token = typeof auth === 'string' ? auth : auth[0];
+    if (token.startsWith('Bearer ')) {
+      const decoded = verifyAuthToken(token.substring('Bearer '.length));
+      if (typeof decoded === 'object') {
+        return {
+          userId: (decoded as JwtPayload).uid,
+          sessionId: (decoded as JwtPayload).sid,
+        };
+      }
+    }
+    return {};
+  };
+
   const server = new ApolloServer({
     gateway,
-    context: ({ req }) => {
-      return req.headers.authorization
-        ? { authorization: req.headers.authorization }
-        : {};
+    context: createContext,
+    engine: {
+      rewriteError: err => {
+        if (err instanceof AuthenticationError) {
+          return null;
+        }
+        return err;
+      },
     },
     subscriptions: false,
     introspection: true,
