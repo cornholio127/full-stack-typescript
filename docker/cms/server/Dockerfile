@@ -1,4 +1,4 @@
-FROM node:13.6-alpine
+FROM node:12.16.1-alpine
 
 RUN apk update && apk upgrade && apk add build-base gcc autoconf automake zlib-dev libpng-dev nasm bash
 

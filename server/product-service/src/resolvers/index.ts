@@ -22,6 +22,7 @@ const resolvers = {
     __resolveReference: (product: GQLProduct) => {
       return productResolver.productById(product.id);
     },
+    images: imageResolver.productImages,
     specification: specificationResolver.productSpecification,
   },
   Image: {

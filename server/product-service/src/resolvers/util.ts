@@ -1,6 +1,9 @@
 import { Record, Field } from 'tsooq';
 
-type GroupMap = { [index: string]: Record[] };
+interface GroupMap {
+  [key: string]: Record[];
+  [key: number]: Record[];
+}
 
 type MapFn<T> = (rec: Record) => T;
 

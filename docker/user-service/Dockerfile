@@ -1,4 +1,4 @@
-FROM node:13.5-alpine
+FROM node:12.16.1-alpine
 
 RUN mkdir /log
 RUN chmod 777 /log
@@ -13,7 +13,6 @@ VOLUME [ "/log" ]
 
 WORKDIR /app
 
-RUN apk add --no-cache make gcc g++ python
 RUN npm install --production
 
 EXPOSE 9000

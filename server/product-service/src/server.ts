@@ -4,6 +4,7 @@ import { configure, getLogger } from 'log4js';
 import resolvers from './resolvers';
 import typeDefs from './schema';
 import env from './env';
+import createDataLoaders from './loaders';
 
 const PATTERN = '%d %[[%5.5p] [%c-%5.5z]%] %m';
 const LAYOUT = { type: 'pattern', pattern: PATTERN };
@@ -18,6 +19,8 @@ configure({
 
 const server = new ApolloServer({
   schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+  context: () => ({ dataLoaders: createDataLoaders() }),
+  tracing: true,
 });
 
 server
