@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@apollo/federation": "0.12.1",
-    "apollo-server": "2.10.1",
+    "apollo-server": "2.14.2",
     "bcrypt": "4.0.1",
     "graphql": "14.6.0",
     "jsonwebtoken": "8.5.1",
